@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Expert Network Search — User Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0b0e;--surf:#13151a;--surf2:#1c1f27;--bdr:#2a2d38;--acc:#6366f1;--acc2:#a78bfa;--gold:#f59e0b;--grn:#34d399;--red:#f87171;--txt:#e8eaf0;--mut:#7c8096;--serif:'Playfair Display',serif;--sans:'DM Sans',sans-serif;--mono:'JetBrains Mono',monospace}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--bg);color:var(--txt);line-height:1.75;overflow-x:hidden}
+.wrap{display:grid;grid-template-columns:255px 1fr;min-height:100vh}
+nav{position:sticky;top:0;height:100vh;overflow-y:auto;background:var(--surf);border-right:1px solid var(--bdr);padding:2rem 1.4rem;scrollbar-width:thin}
+.nl{font-family:var(--serif);font-size:1.25rem;color:#fff}.nl span{color:var(--acc)}
+.ns{font-size:.62rem;color:var(--mut);text-transform:uppercase;letter-spacing:.14em;margin-bottom:2rem;padding-bottom:1.2rem;border-bottom:1px solid var(--bdr);display:block;margin-top:.2rem}
+.ng{font-size:.6rem;text-transform:uppercase;letter-spacing:.15em;color:var(--mut);margin:1.3rem 0 .4rem .5rem}
+nav ul{list-style:none}
+nav a{display:block;padding:.28rem .65rem;border-radius:4px;color:var(--mut);text-decoration:none;font-size:.81rem;transition:all .15s;border-left:2px solid transparent}
+nav a:hover{color:var(--txt);background:var(--surf2)}
+nav a.on{color:var(--acc2);background:rgba(99,102,241,.1);border-left-color:var(--acc)}
+main{padding:3.5rem 4rem;max-width:840px}
+.hero{margin-bottom:3.5rem;padding:2.8rem;background:linear-gradient(135deg,var(--surf),rgba(99,102,241,.07));border:1px solid var(--bdr);border-radius:10px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-50px;right:-50px;width:220px;height:220px;border-radius:50%;background:radial-gradient(rgba(99,102,241,.14),transparent 70%)}
+.hbadge{display:inline-block;background:rgba(99,102,241,.14);border:1px solid rgba(99,102,241,.28);color:var(--acc2);font-size:.68rem;font-family:var(--mono);padding:.22rem .65rem;border-radius:20px;margin-bottom:1.1rem}
+.hero h1{font-family:var(--serif);font-size:2.6rem;font-weight:400;line-height:1.15;letter-spacing:-.02em;color:#fff;margin-bottom:.9rem}
+.hero h1 em{font-style:italic;color:var(--acc2)}
+.hero p{color:var(--mut);font-size:1rem;max-width:520px}
+.hmeta{display:flex;gap:1.4rem;margin-top:1.6rem;padding-top:1.4rem;border-top:1px solid var(--bdr);flex-wrap:wrap}
+.hstat .v{font-family:var(--mono);font-size:1.25rem;color:var(--acc2)}.hstat .l{font-size:.66rem;color:var(--mut);text-transform:uppercase;letter-spacing:.08em}
+section{scroll-margin-top:2rem;margin-bottom:2.5rem}
+h2{font-family:var(--serif);font-size:1.5rem;font-weight:400;color:#fff;margin:3.2rem 0 1.1rem;padding-bottom:.7rem;border-bottom:1px solid var(--bdr)}
+h3{font-family:var(--mono);font-size:.73rem;text-transform:uppercase;letter-spacing:.12em;color:var(--acc);margin:1.9rem 0 .55rem;font-weight:500}
+p{color:#c4c8d8;margin-bottom:.9rem;font-size:.93rem}
+pre{background:var(--surf);border:1px solid var(--bdr);border-radius:7px;padding:1.1rem 1.3rem;overflow-x:auto;font-family:var(--mono);font-size:.78rem;line-height:1.7;margin:.7rem 0 1.3rem;position:relative}
+pre::after{content:attr(data-lang);position:absolute;top:.45rem;right:.7rem;font-size:.6rem;color:var(--mut);text-transform:uppercase;letter-spacing:.1em}
+code{font-family:var(--mono);background:var(--surf2);color:var(--acc2);padding:.14em .42em;border-radius:3px;font-size:.82em}
+pre code{background:none;color:inherit;padding:0}
+.kw{color:#a78bfa}.str{color:#34d399}.cmt{color:var(--mut);font-style:italic}.key{color:#93c5fd}.num{color:#fb923c}
+.callout{display:flex;gap:.8rem;padding:.9rem 1.1rem;border-radius:7px;margin:1rem 0;font-size:.87rem;border-left:3px solid}
+.callout.tip{background:rgba(52,211,153,.05);border-color:var(--grn)}.callout.warn{background:rgba(245,158,11,.05);border-color:var(--gold)}.callout.info{background:rgba(99,102,241,.05);border-color:var(--acc)}.callout.danger{background:rgba(248,113,113,.05);border-color:var(--red)}
+.ci{font-size:1rem;flex-shrink:0;margin-top:.1rem}
+.tw{overflow-x:auto;margin:.7rem 0 1.3rem;border-radius:7px;border:1px solid var(--bdr)}
+table{width:100%;border-collapse:collapse;font-size:.83rem}
+th{background:var(--surf2);color:var(--mut);text-align:left;padding:.55rem .9rem;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;border-bottom:1px solid var(--bdr);font-weight:500}
+td{padding:.55rem .9rem;border-bottom:1px solid rgba(42,45,56,.6);color:#c4c8d8;vertical-align:top}
+tr:last-child td{border-bottom:none}tr:hover td{background:rgba(255,255,255,.018)}
+.qg{display:grid;gap:.7rem;margin:.9rem 0}
+.qc{background:var(--surf);border:1px solid var(--bdr);border-radius:7px;padding:.9rem 1.1rem;transition:border-color .18s}
+.qc:hover{border-color:var(--acc)}.qc .q{font-family:var(--mono);font-size:.81rem;color:var(--acc2);margin-bottom:.35rem;line-height:1.5}.qc .d{font-size:.78rem;color:var(--mut);margin:0}
+.tags{margin-top:.55rem;display:flex;gap:.35rem;flex-wrap:wrap}
+.tag{font-family:var(--mono);font-size:.63rem;padding:.14rem .48rem;border-radius:3px;border:1px solid}
+.tg{color:#60a5fa;border-color:rgba(96,165,250,.28);background:rgba(96,165,250,.06)}
+.ts{color:#a78bfa;border-color:rgba(167,139,250,.28);background:rgba(167,139,250,.06)}
+.ti{color:#34d399;border-color:rgba(52,211,153,.28);background:rgba(52,211,153,.06)}
+.tl{color:#fb923c;border-color:rgba(251,146,60,.28);background:rgba(251,146,60,.06)}
+.te{color:#f9a8d4;border-color:rgba(249,168,212,.28);background:rgba(249,168,212,.06)}
+.rdemo{background:var(--surf);border:1px solid var(--bdr);border-radius:9px;padding:1.3rem;margin:1.1rem 0}
+.rname{font-family:var(--serif);font-size:1.1rem;color:#fff;margin-bottom:.18rem}
+.rmeta{color:var(--mut);font-size:.78rem;margin-bottom:.8rem}
+.sr{margin:.42rem 0}.sl{display:flex;justify-content:space-between;font-size:.71rem;color:var(--mut);margin-bottom:.2rem}
+.st{height:6px;background:var(--surf2);border-radius:3px;overflow:hidden}
+.sf{height:100%;border-radius:3px}.sf.sem{background:linear-gradient(90deg,var(--acc),var(--acc2))}.sf.rel{background:linear-gradient(90deg,var(--grn),#6ee7b7)}
+.sigs{display:flex;flex-wrap:wrap;gap:.32rem;margin-top:.8rem}
+.sig{font-size:.7rem;font-family:var(--mono);padding:.18rem .52rem;border-radius:3px;border:1px solid}
+.sig.p{color:#34d399;border-color:rgba(52,211,153,.22);background:rgba(52,211,153,.06)}
+.sig.n{color:#f87171;border-color:rgba(248,113,113,.22);background:rgba(248,113,113,.06)}
+.sig.u{color:var(--mut);border-color:var(--bdr)}
+.steps{margin:1.1rem 0}.step{display:flex;gap:.9rem;margin-bottom:1.3rem;align-items:flex-start}
+.sn{background:var(--acc);color:#fff;font-size:.7rem;font-weight:700;width:23px;height:23px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:.1rem;font-family:var(--mono)}
+.sb h4{font-size:.88rem;font-weight:500;color:#fff;margin-bottom:.22rem}.sb p{margin:0;font-size:.83rem;color:var(--mut)}
+.mb{display:inline-block;font-family:var(--mono);font-size:.63rem;font-weight:700;padding:.09rem .38rem;border-radius:3px;margin-right:.25rem}
+.mb.post{background:rgba(248,113,113,.13);color:#f87171;border:1px solid rgba(248,113,113,.22)}
+.mb.get{background:rgba(52,211,153,.1);color:#34d399;border:1px solid rgba(52,211,153,.22)}
+hr{border:none;border-top:1px solid var(--bdr);margin:2.3rem 0}
+footer{margin-top:4rem;padding-top:1.8rem;border-top:1px solid var(--bdr);color:var(--mut);font-size:.76rem;font-family:var(--mono)}
+::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:3px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav>
+  <div class="nl">Expert<span>Search</span></div>
+  <span class="ns">User Guide · v2.0</span>
+  <div class="ng">Getting Started</div>
+  <ul>
+    <li><a href="#what">What is this?</a></li>
+    <li><a href="#how">How it works</a></li>
+    <li><a href="#quickstart">Quick start</a></li>
+  </ul>
+  <div class="ng">Core Features</div>
+  <ul>
+    <li><a href="#chat">Expert Search (/chat)</a></li>
+    <li><a href="#results">Reading results</a></li>
+    <li><a href="#signals">Scoring signals</a></li>
+    <li><a href="#conversations">Multi-turn search</a></li>
+    <li><a href="#filters">Hard filters</a></li>
+  </ul>
+  <div class="ng">Analytics</div>
+  <ul>
+    <li><a href="#analytics">SQL Analytics (/query)</a></li>
+    <li><a href="#hybrid">Hybrid mode</a></li>
+  </ul>
+  <div class="ng">Reference</div>
+  <ul>
+    <li><a href="#examples">Query examples</a></li>
+    <li><a href="#troubleshoot">Troubleshooting</a></li>
+    <li><a href="#glossary">Glossary</a></li>
+  </ul>
+</nav>
+<main>
+<div class="hero">
+  <div class="hbadge">📖 User Guide</div>
+  <h1>Expert Network<br><em>Search Copilot</em></h1>
+  <p>Find the right subject-matter experts using plain English. Combines semantic vector search with structured re-ranking — and explains every decision.</p>
+  <div class="hmeta">
+    <div class="hstat"><div class="v">10K+</div><div class="l">Expert profiles</div></div>
+    <div class="hstat"><div class="v">2</div><div class="l">Search modes</div></div>
+    <div class="hstat"><div class="v">5</div><div class="l">Scoring signals</div></div>
+    <div class="hstat"><div class="v">&lt;1s</div><div class="l">Vector search</div></div>
+  </div>
+</div>
+
+<section id="what">
+<h2>What is this?</h2>
+<p>The Expert Network Search Copilot is a backend API for searching professional candidate profiles using natural language. No SQL, no manual filters — describe who you need in plain English.</p>
+<div class="tw"><table><thead><tr><th>Mode</th><th>Best for</th><th>Endpoint</th><th>Speed</th></tr></thead>
+<tbody>
+<tr><td><b>Expert Search</b></td><td>Finding specific expert profiles</td><td><span class="mb post">POST</span><code>/chat</code></td><td>0.5–1.5s</td></tr>
+<tr><td><b>SQL Analytics</b></td><td>Counts, distributions, aggregations</td><td><span class="mb post">POST</span><code>/query</code></td><td>3–8s</td></tr>
+<tr><td><b>Expert Profile</b></td><td>Full CV for a specific candidate</td><td><span class="mb get">GET</span><code>/expert/{id}</code></td><td>&lt;0.3s</td></tr>
+</tbody></table></div>
+</section>
+
+<section id="how">
+<h2>How it works</h2>
+<div class="steps">
+<div class="step"><div class="sn">1</div><div class="sb"><h4>Query understanding</h4><p>Detects signals: geography, seniority, industry, experience threshold, languages.</p></div></div>
+<div class="step"><div class="sn">2</div><div class="sb"><h4>Semantic vector search</h4><p>Converts your query to an embedding and matches against 10K+ profiles via cosine similarity in Pinecone.</p></div></div>
+<div class="step"><div class="sn">3</div><div class="sb"><h4>Structured re-ranking</h4><p>Adjusts scores using deliberate signal weights. Geography match +0.20; below experience threshold −0.15.</p></div></div>
+<div class="step"><div class="sn">4</div><div class="sb"><h4>Explainable results</h4><p>Every result includes a <code>match_explanation</code> with exact signals. Transparent enough to show a client.</p></div></div>
+</div>
+</section>
+
+<section id="quickstart">
+<h2>Quick Start</h2>
+<h3>Health check</h3>
+<pre data-lang="bash">curl http://localhost:8001/health
+<span class="cmt"># → {"status": "ok"}</span></pre>
+<h3>First search</h3>
+<pre data-lang="bash">curl -X POST http://localhost:8001/chat \
+  -H <span class="str">"Content-Type: application/json"</span> \
+  -d <span class="str">'{"query":"Find pharma regulatory experts in Saudi Arabia","top_k":5}'</span></pre>
+<div class="callout tip"><div class="ci">💡</div><div>Open <code>http://localhost:8001/docs</code> for the interactive Swagger UI — try every endpoint without curl.</div></div>
+</section>
+
+<hr>
+
+<section id="chat">
+<h2>Expert Search — <code>/chat</code></h2>
+<h3>Request parameters</h3>
+<div class="tw"><table><thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>query</code></td><td>string</td><td>✓</td><td>Natural language expert search (min 3 chars)</td></tr>
+<tr><td><code>conversation_id</code></td><td>string</td><td>—</td><td>Previous session ID for follow-ups</td></tr>
+<tr><td><code>top_k</code></td><td>int 1–50</td><td>—</td><td>Results to return (default: 10)</td></tr>
+<tr><td><code>filters</code></td><td>object</td><td>—</td><td>Hard pre-filters applied before vector search</td></tr>
+</tbody></table></div>
+<h3>Example queries</h3>
+<div class="qg">
+<div class="qc"><div class="q">"Find regulatory affairs experts with pharma experience in the Middle East"</div><div class="tags"><span class="tag ti">pharma</span><span class="tag tg">MENA</span></div></div>
+<div class="qc"><div class="q">"Senior data scientists in Saudi Arabia with 10+ years"</div><div class="tags"><span class="tag ts">senior</span><span class="tag tg">Saudi Arabia</span><span class="tag te">10+</span></div></div>
+<div class="qc"><div class="q">"Arabic-speaking VP or Director in financial services"</div><div class="tags"><span class="tag tl">Arabic</span><span class="tag ts">VP/Director</span><span class="tag ti">finance</span></div></div>
+<div class="qc"><div class="q">"CPO or Chief Product Officer at a Saudi petrochemical company"</div><div class="tags"><span class="tag ts">C-suite</span><span class="tag tg">Saudi Arabia</span><span class="tag ti">petrochem</span></div></div>
+</div>
+</section>
+
+<section id="results">
+<h2>Reading Results</h2>
+<div class="rdemo">
+  <div class="rname">Ahmed Hassan</div>
+  <div class="rmeta">VP Regulatory Affairs · Acme Pharma · Riyadh, Saudi Arabia · 14 yrs</div>
+  <div class="sr"><div class="sl"><span>Vector score (cosine similarity)</span><span>0.87</span></div><div class="st"><div class="sf sem" style="width:87%"></div></div></div>
+  <div class="sr"><div class="sl"><span>Relevance score (after re-ranking)</span><span>0.94</span></div><div class="st"><div class="sf rel" style="width:94%"></div></div></div>
+  <div class="sigs">
+    <span class="sig u">Semantic: 0.87</span>
+    <span class="sig p">✓ Location: Saudi Arabia +0.20</span>
+    <span class="sig p">✓ Seniority: VP +0.10</span>
+    <span class="sig p">✓ Industry: pharma +0.12</span>
+  </div>
+</div>
+<div class="tw"><table><thead><tr><th>Field</th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><td><code>vector_score</code></td><td>Raw cosine similarity (0–1). Treats all signals equally.</td></tr>
+<tr><td><code>relevance_score</code></td><td>Final score after structured re-ranking. Determines order.</td></tr>
+<tr><td><code>match_explanation.signals</code></td><td>✓ boosted · ✗ penalised. Full score breakdown.</td></tr>
+<tr><td><code>match_explanation.top_factor</code></td><td>The single most impactful signal for this candidate.</td></tr>
+</tbody></table></div>
+</section>
+
+<section id="signals">
+<h2>Scoring Signals</h2>
+<div class="tw"><table><thead><tr><th>Signal</th><th>Trigger keywords</th><th>Match</th><th>Miss</th></tr></thead>
+<tbody>
+<tr><td>Geography</td><td>saudi, uae, dubai, mena, qatar, egypt, uk…</td><td style="color:var(--grn)">+0.20</td><td style="color:var(--red)">−0.10</td></tr>
+<tr><td>Experience threshold</td><td>"10+ years", "15 years", numeric patterns</td><td style="color:var(--grn)">+0.10</td><td style="color:var(--red)">−0.15</td></tr>
+<tr><td>Seniority</td><td>senior, vp, director, cpo, chief, head of…</td><td style="color:var(--grn)">+0.10</td><td style="color:var(--red)">−0.05</td></tr>
+<tr><td>Industry</td><td>pharma, financial, tech, healthcare, energy…</td><td style="color:var(--grn)">+0.12</td><td style="color:var(--red)">−0.08</td></tr>
+<tr><td>Language</td><td>arabic, french, german, mandarin</td><td style="color:var(--grn)">+0.08</td><td>—</td></tr>
+</tbody></table></div>
+<div class="callout info"><div class="ci">ℹ️</div><div>A candidate with <code>vector_score: 0.87</code> but <code>relevance_score: 0.74</code> was penalised — check <code>match_explanation.signals</code> to see which signal caused the drop.</div></div>
+</section>
+
+<section id="conversations">
+<h2>Multi-turn Search</h2>
+<p>Every response includes a <code>conversation_id</code>. Pass it back to make follow-up queries that reference prior results.</p>
+<pre data-lang="bash"><span class="cmt"># Turn 1</span>
+curl -X POST http://localhost:8001/chat \
+  -d <span class="str">'{"query":"Find pharma regulatory experts in the Middle East"}'</span>
+<span class="cmt"># → "conversation_id": "abc-123-..."</span>
+
+<span class="cmt"># Turn 2 — narrow</span>
+curl -X POST http://localhost:8001/chat \
+  -d <span class="str">'{"query":"Filter to only Saudi Arabia","conversation_id":"abc-123-..."}'</span>
+
+<span class="cmt"># Turn 3 — narrow further</span>
+curl -X POST http://localhost:8001/chat \
+  -d <span class="str">'{"query":"Which have 10+ years?","conversation_id":"abc-123-..."}'</span></pre>
+<div class="callout tip"><div class="ci">💡</div><div>Follow-up triggers detected automatically: <em>those, them, filter, narrow, only, same, above</em>. Start broad, then narrow progressively.</div></div>
+</section>
+
+<section id="filters">
+<h2>Hard Filters</h2>
+<p>Filters apply <em>before</em> vector search. Only matching candidates are considered at all.</p>
+<h3>By country</h3>
+<pre data-lang="json">{"query":"Data scientists","filters":{"country_name":{"$eq":"Saudi Arabia"}}}</pre>
+<h3>By minimum experience</h3>
+<pre data-lang="json">{"query":"Pharma consultants","filters":{"years_of_experience":{"$gte":10}}}</pre>
+<h3>Multiple constraints (AND)</h3>
+<pre data-lang="json">{"query":"Regulatory experts","filters":{"$and":[{"country_name":{"$eq":"Saudi Arabia"}},{"years_of_experience":{"$gte":8}}]}}</pre>
+<div class="callout warn"><div class="ci">⚠️</div><div>Very restrictive filters may return fewer results than <code>top_k</code>. If that happens, relax the filter and encode the preference in the query text instead.</div></div>
+<h3>Available filter fields</h3>
+<p><code>country_name</code> · <code>city_name</code> · <code>years_of_experience</code> · <code>current_title</code> · <code>gender</code> · <code>country_code</code></p>
+</section>
+
+<hr>
+
+<section id="analytics">
+<h2>SQL Analytics — <code>/query</code></h2>
+<p>For counting, aggregating, and distributing data. Internally converts your question to SQL using a LangGraph agent.</p>
+<div class="qg">
+<div class="qc"><div class="q">"How many candidates speak Arabic at a Native level?"</div></div>
+<div class="qc"><div class="q">"Top 10 most common skills across all candidates"</div></div>
+<div class="qc"><div class="q">"Distribution of candidates by years of experience in 5-year buckets"</div></div>
+<div class="qc"><div class="q">"Which countries have the most candidates with a PhD?"</div></div>
+</div>
+<pre data-lang="bash">curl -X POST http://localhost:8001/query \
+  -H <span class="str">"Content-Type: application/json"</span> \
+  -d <span class="str">'{"question":"How many candidates hold an MBA?","include_sql":true}'</span></pre>
+</section>
+
+<section id="hybrid">
+<h2>Hybrid Mode</h2>
+<p>The <code>/chat</code> endpoint automatically routes analytical sub-queries (containing "how many", "count", "top") to the SQL agent in parallel with vector search — so you get both a ranked shortlist and analytical context in one call.</p>
+<pre data-lang="bash">curl -X POST http://localhost:8001/chat \
+  -d <span class="str">'{"query":"Find top pharma experts in Saudi Arabia -- how many exist in total?","top_k":5}'</span>
+<span class="cmt"># Response includes both "results" (ranked shortlist) and "sql_answer" (total count)</span></pre>
+</section>
+
+<hr>
+
+<section id="examples">
+<h2>Query Examples</h2>
+<h3>Expert search</h3>
+<div class="qg">
+<div class="qc"><div class="q">"Find regulatory affairs experts with pharma experience in the Middle East"</div><div class="tags"><span class="tag ti">pharma</span><span class="tag tg">MENA</span></div></div>
+<div class="qc"><div class="q">"Senior data scientists in Saudi Arabia with 10+ years machine learning"</div><div class="tags"><span class="tag ts">senior</span><span class="tag tg">Saudi Arabia</span><span class="tag te">10+</span></div></div>
+<div class="qc"><div class="q">"Arabic-speaking VP or Director with financial services background"</div><div class="tags"><span class="tag tl">Arabic</span><span class="tag ts">VP/Director</span><span class="tag ti">finance</span></div></div>
+<div class="qc"><div class="q">"CPO or Chief Product Officer at a Saudi petrochemical company"</div><div class="tags"><span class="tag ts">C-suite</span><span class="tag tg">Saudi Arabia</span><span class="tag ti">petrochem</span></div></div>
+<div class="qc"><div class="q">"Junior data engineers with Python and SQL skills anywhere"</div><div class="tags"><span class="tag ts">junior</span></div></div>
+</div>
+<h3>Analytics (use <code>/query</code>)</h3>
+<div class="qg">
+<div class="qc"><div class="q">"How many candidates are based in Saudi Arabia?"</div></div>
+<div class="qc"><div class="q">"Average years of experience per country — top 10"</div></div>
+<div class="qc"><div class="q">"Which candidates have a PhD and work in financial services?"</div></div>
+</div>
+</section>
+
+<section id="troubleshoot">
+<h2>Troubleshooting</h2>
+<h3>Fewer results than top_k</h3>
+<p>Filters too restrictive. Relax the filter and encode the preference in the query text.</p>
+<h3>Top result doesn't seem relevant</h3>
+<p>Check <code>match_explanation.signals</code>. Add a country name or seniority level to the query to activate the corresponding signal.</p>
+<h3>/query returns "No results found"</h3>
+<p>Check spelling of proper nouns. Database uses: <em>"Saudi Arabia"</em> not <em>"KSA"</em>; <em>"Pharmaceutical"</em> not <em>"pharma"</em>.</p>
+<h3>422 Unprocessable Entity</h3>
+<p>Validation error — <code>query</code> shorter than 3 chars, <code>top_k</code> outside 1–50, or malformed JSON.</p>
+<h3>NotFoundError: anthropic/claude-3.5-sonnet</h3>
+<p>Deprecated model ID. Set <code>LLM_MODEL=anthropic/claude-sonnet-4.6</code> in your <code>.env</code>.</p>
+</section>
+
+<section id="glossary">
+<h2>Glossary</h2>
+<div class="tw"><table><thead><tr><th>Term</th><th>Definition</th></tr></thead>
+<tbody>
+<tr><td><b>Embedding</b></td><td>A numerical vector capturing semantic meaning. Similar texts have similar embeddings.</td></tr>
+<tr><td><b>Vector search</b></td><td>Finding the most similar candidates to a query by comparing embedding vectors.</td></tr>
+<tr><td><b>Re-ranking</b></td><td>Adjusting raw similarity scores using structured signals (geography, experience, seniority, industry, language).</td></tr>
+<tr><td><b>Pinecone</b></td><td>The managed vector database used to store and search candidate embeddings.</td></tr>
+<tr><td><b>Text-to-SQL</b></td><td>Converting a natural language question into SQL executed against PostgreSQL.</td></tr>
+<tr><td><b>Precision@5</b></td><td>Fraction of top-5 results that are actually relevant. The primary quality metric.</td></tr>
+<tr><td><b>Conversation ID</b></td><td>Session token linking follow-up queries to prior search results.</td></tr>
+</tbody></table></div>
+</section>
+
+<footer>Expert Network Search Copilot · User Guide v2.0 · FastAPI + Pinecone + LangGraph</footer>
+</main>
+</div>
+<script>
+const ss=document.querySelectorAll('section[id]'),ls=document.querySelectorAll('nav a[href^="#"]');
+new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){ls.forEach(l=>l.classList.remove('on'));const a=document.querySelector(`nav a[href="#${e.target.id}"]`);if(a)a.classList.add('on')}})},{rootMargin:'-15% 0px -70% 0px'}).observe?ss.forEach(s=>new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){ls.forEach(l=>l.classList.remove('on'));const a=document.querySelector(`nav a[href="#${e.target.id}"]`);if(a)a.classList.add('on')}})},{rootMargin:'-15% 0px -70% 0px'}).observe(s)):null;
+</script>
+</body>
+</html>

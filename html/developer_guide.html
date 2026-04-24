@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Expert Network Search — Developer Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&family=Space+Mono:wght@400;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#070910;--s1:#0d1018;--s2:#141824;--s3:#1a2030;
+  --bdr:#252b3b;--bdr2:#1e2436;
+  --blue:#4f9cf9;--purple:#9b8cff;--teal:#2dd4bf;--amber:#fbbf24;--rose:#fb7185;--lime:#86efac;
+  --txt:#dce3f0;--mut:#5e6b85;--dim:#8494ad;
+  --serif:'Libre Baskerville',serif;--sans:'Space Grotesk',sans-serif;--mono:'Space Mono',monospace
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--bg);color:var(--txt);line-height:1.72;overflow-x:hidden}
+
+/* LAYOUT */
+.wrap{display:grid;grid-template-columns:270px 1fr;min-height:100vh}
+
+/* NAV */
+nav{position:sticky;top:0;height:100vh;overflow-y:auto;background:var(--s1);border-right:1px solid var(--bdr2);padding:1.8rem 1.3rem;scrollbar-width:thin}
+.brand{font-family:var(--mono);font-size:.82rem;color:var(--blue);margin-bottom:.15rem}
+.brand-sub{font-size:.62rem;color:var(--mut);margin-bottom:1.8rem;padding-bottom:1.4rem;border-bottom:1px solid var(--bdr2);display:block}
+.ng{font-size:.58rem;text-transform:uppercase;letter-spacing:.16em;color:var(--mut);margin:1.2rem 0 .38rem .5rem}
+nav ul{list-style:none}
+nav a{display:block;padding:.27rem .6rem;border-radius:4px;color:var(--mut);text-decoration:none;font-size:.79rem;font-family:var(--mono);transition:all .14s;border-left:2px solid transparent}
+nav a:hover{color:var(--txt);background:var(--s2)}
+nav a.on{color:var(--blue);background:rgba(79,156,249,.09);border-left-color:var(--blue)}
+
+/* MAIN */
+main{padding:3.5rem 4rem;max-width:900px}
+
+/* HERO */
+.hero{margin-bottom:3.5rem;padding:2.6rem;background:var(--s1);border:1px solid var(--bdr);border-top:3px solid var(--blue);border-radius:10px;position:relative;overflow:hidden}
+.hero::after{content:'';position:absolute;bottom:-40px;right:-40px;width:200px;height:200px;border-radius:50%;background:radial-gradient(rgba(79,156,249,.1),transparent 70%)}
+.hbadge{font-family:var(--mono);font-size:.65rem;color:var(--teal);background:rgba(45,212,191,.1);border:1px solid rgba(45,212,191,.22);padding:.2rem .6rem;border-radius:20px;display:inline-block;margin-bottom:1rem}
+.hero h1{font-family:var(--serif);font-size:2.2rem;font-weight:700;color:#fff;line-height:1.2;margin-bottom:.8rem}
+.hero p{color:var(--dim);font-size:.95rem;max-width:580px}
+
+/* HEADINGS */
+section{scroll-margin-top:2rem;margin-bottom:2.5rem}
+h2{font-family:var(--serif);font-size:1.38rem;color:#fff;margin:3rem 0 1rem;padding-bottom:.65rem;border-bottom:1px solid var(--bdr);display:flex;align-items:center;gap:.6rem}
+h2::before{content:'//';font-family:var(--mono);color:var(--blue);font-size:.85rem;font-weight:700}
+h3{font-size:.75rem;text-transform:uppercase;letter-spacing:.1em;color:var(--teal);font-family:var(--mono);margin:1.8rem 0 .5rem}
+p{color:#b8c4d8;margin-bottom:.88rem;font-size:.92rem}
+a{color:var(--blue);text-decoration:none}a:hover{text-decoration:underline}
+
+/* CODE */
+pre{background:var(--s2);border:1px solid var(--bdr);border-radius:7px;padding:1.1rem 1.25rem;overflow-x:auto;font-family:var(--mono);font-size:.76rem;line-height:1.72;margin:.7rem 0 1.3rem;position:relative}
+pre::after{content:attr(data-lang);position:absolute;top:.4rem;right:.7rem;font-size:.58rem;color:var(--mut);text-transform:uppercase;letter-spacing:.1em}
+code{font-family:var(--mono);background:var(--s2);color:var(--amber);padding:.13em .4em;border-radius:3px;font-size:.8em}
+pre code{background:none;color:inherit;padding:0}
+.kw{color:#9b8cff}.str{color:#86efac}.cmt{color:var(--mut);font-style:italic}.key{color:#93c5fd}.num{color:#fb923c}.dec{color:var(--teal)}
+
+/* CALLOUTS */
+.box{display:flex;gap:.8rem;padding:.9rem 1.05rem;border-radius:7px;margin:1rem 0;font-size:.85rem;border:1px solid}
+.box.note{background:rgba(79,156,249,.05);border-color:rgba(79,156,249,.2)}
+.box.warn{background:rgba(251,191,36,.05);border-color:rgba(251,191,36,.2)}
+.box.tip{background:rgba(45,212,191,.05);border-color:rgba(45,212,191,.2)}
+.box.danger{background:rgba(251,113,133,.05);border-color:rgba(251,113,133,.2)}
+.bi{flex-shrink:0;font-size:1rem;margin-top:.08rem}
+
+/* TABLE */
+.tw{overflow-x:auto;margin:.7rem 0 1.3rem;border-radius:7px;border:1px solid var(--bdr)}
+table{width:100%;border-collapse:collapse;font-size:.82rem}
+th{background:var(--s3);color:var(--mut);text-align:left;padding:.55rem .9rem;font-size:.66rem;letter-spacing:.09em;text-transform:uppercase;border-bottom:1px solid var(--bdr);font-weight:600}
+td{padding:.55rem .9rem;border-bottom:1px solid var(--bdr2);color:#b8c4d8;vertical-align:top}
+tr:last-child td{border-bottom:none}tr:hover td{background:rgba(255,255,255,.018)}
+
+/* FILE TREE */
+.tree{background:var(--s2);border:1px solid var(--bdr);border-radius:7px;padding:1.2rem 1.4rem;font-family:var(--mono);font-size:.77rem;line-height:1.85;margin:.7rem 0 1.3rem}
+.td{color:var(--blue)}.tf{color:var(--txt)}.tn{color:var(--lime)}.tc{color:var(--mut);font-style:italic}
+
+/* FLOW DIAGRAM */
+.flow{display:flex;align-items:center;flex-wrap:wrap;gap:.4rem;padding:1rem 1.2rem;background:var(--s2);border:1px solid var(--bdr);border-radius:7px;margin:.7rem 0 1.3rem;font-family:var(--mono);font-size:.74rem}
+.fn{background:var(--s3);border:1px solid var(--bdr);color:var(--txt);padding:.25rem .65rem;border-radius:4px}
+.fn.entry{border-color:var(--teal);color:var(--teal)}.fn.exit{border-color:var(--rose);color:var(--rose)}.fn.cond{border-style:dashed;border-color:var(--amber);color:var(--amber)}
+.fa{color:var(--mut);font-size:.8rem}
+
+/* REFERENCE CARDS */
+.ref-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:.9rem;margin:1rem 0}
+.rcard{background:var(--s1);border:1px solid var(--bdr);border-radius:8px;padding:1.1rem;transition:border-color .18s}
+.rcard:hover{border-color:var(--blue)}.rcard h4{font-size:.82rem;color:#fff;margin-bottom:.3rem;font-weight:600}
+.rcard .rt{font-size:.68rem;font-family:var(--mono);color:var(--teal);margin-bottom:.5rem}
+.rcard p{font-size:.78rem;color:var(--dim);margin:0}
+.rcard a{color:var(--blue);font-size:.74rem;display:block;margin-top:.5rem;font-family:var(--mono)}
+
+/* ARCHITECTURE DIAGRAM */
+.arch{background:var(--s2);border:1px solid var(--bdr);border-radius:10px;padding:1.8rem;margin:1rem 0}
+.arch-row{display:flex;gap:1rem;margin-bottom:1rem;align-items:stretch;flex-wrap:wrap}
+.ablock{flex:1;min-width:120px;background:var(--s3);border:1px solid var(--bdr);border-radius:6px;padding:.8rem;text-align:center}
+.ablock h5{font-family:var(--mono);font-size:.7rem;color:var(--blue);margin-bottom:.3rem;font-weight:700}
+.ablock p{font-size:.72rem;color:var(--mut);margin:0}
+.arrow-row{display:flex;justify-content:center;gap:3rem;margin:.5rem 0;font-family:var(--mono);font-size:.85rem;color:var(--mut)}
+
+/* ENV TABLE */
+.ekey{color:var(--amber);font-family:var(--mono);font-size:.79rem}
+
+/* SCORE TABLE */
+.pos{color:var(--lime)}.neg{color:var(--rose)}.neu{color:var(--mut)}
+
+/* BADGE */
+.badge{display:inline-block;font-family:var(--mono);font-size:.63rem;font-weight:700;padding:.1rem .38rem;border-radius:3px;margin-right:.25rem}
+.badge.post{background:rgba(251,113,133,.13);color:#fb7185;border:1px solid rgba(251,113,133,.22)}
+.badge.get{background:rgba(134,239,172,.1);color:#86efac;border:1px solid rgba(134,239,172,.22)}
+
+/* FUTURE SECTION SPECIAL */
+.future-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;margin:1.2rem 0}
+.fcard{background:linear-gradient(135deg,var(--s1),var(--s2));border:1px solid var(--bdr);border-radius:9px;padding:1.3rem;position:relative;overflow:hidden}
+.fcard::before{content:'';position:absolute;top:-20px;right:-20px;width:80px;height:80px;border-radius:50%;opacity:.4}
+.fcard.neo4j::before{background:radial-gradient(var(--teal),transparent)}
+.fcard.gnn::before{background:radial-gradient(var(--purple),transparent)}
+.fcard.rag::before{background:radial-gradient(var(--amber),transparent)}
+.fcard.hybrid::before{background:radial-gradient(var(--blue),transparent)}
+.fcard.agent::before{background:radial-gradient(var(--rose),transparent)}
+.fcard h4{font-size:.9rem;color:#fff;font-weight:600;margin-bottom:.4rem;display:flex;align-items:center;gap:.4rem}
+.fcard .impact{font-family:var(--mono);font-size:.65rem;padding:.15rem .45rem;border-radius:3px;margin-left:auto}
+.impact.high{background:rgba(134,239,172,.1);color:var(--lime);border:1px solid rgba(134,239,172,.2)}
+.impact.medium{background:rgba(251,191,36,.1);color:var(--amber);border:1px solid rgba(251,191,36,.2)}
+.fcard p{font-size:.8rem;color:var(--dim);margin:.3rem 0 .6rem}
+.fcard ul{font-size:.78rem;color:var(--dim);padding-left:1.1rem}
+.fcard ul li{margin-bottom:.25rem}
+.fcard a{font-family:var(--mono);font-size:.72rem;color:var(--blue)}
+
+hr{border:none;border-top:1px solid var(--bdr);margin:2.2rem 0}
+footer{margin-top:4rem;padding-top:1.6rem;border-top:1px solid var(--bdr);color:var(--mut);font-size:.73rem;font-family:var(--mono)}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:3px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ═══ NAV ═══ -->
+<nav>
+  <div class="brand">// expert-network</div>
+  <span class="brand-sub">Developer Guide · v2.0</span>
+
+  <div class="ng">Architecture</div>
+  <ul>
+    <li><a href="#overview">System overview</a></li>
+    <li><a href="#structure">Project structure</a></li>
+    <li><a href="#dataflow">Request data flow</a></li>
+  </ul>
+
+  <div class="ng">Core Components</div>
+  <ul>
+    <li><a href="#ingestion">Ingestion pipeline</a></li>
+    <li><a href="#vector">Vector search</a></li>
+    <li><a href="#reranking">Re-ranking engine</a></li>
+    <li><a href="#sql-agent">Text-to-SQL agent</a></li>
+    <li><a href="#sessions">Session store</a></li>
+  </ul>
+
+  <div class="ng">Setup & Deploy</div>
+  <ul>
+    <li><a href="#env">Environment vars</a></li>
+    <li><a href="#conda">Conda setup</a></li>
+    <li><a href="#local">Local dev</a></li>
+    <li><a href="#remote">Remote deploy</a></li>
+    <li><a href="#testing">Running tests</a></li>
+  </ul>
+
+  <div class="ng">Precision Improvements</div>
+  <ul>
+    <li><a href="#hybrid-search">Hybrid search (BM25+Dense)</a></li>
+    <li><a href="#pinecone-rerank">Neural reranking</a></li>
+    <li><a href="#neo4j">Neo4j graph database</a></li>
+    <li><a href="#gnn">Graph Neural Networks</a></li>
+    <li><a href="#graphrag">GraphRAG architecture</a></li>
+    <li><a href="#agentic">Agentic RAG chatbot</a></li>
+    <li><a href="#rag-anything">RAG-Anything (Multimodal)</a></li>
+    <li><a href="#mmgraphrag">MMGraphRAG (Vision+Language)</a></li>
+  </ul>
+
+  <div class="ng">Reference</div>
+  <ul>
+    <li><a href="#api-ref">API reference</a></li>
+    <li><a href="#models">Pydantic models</a></li>
+    <li><a href="#resources">Resources & papers</a></li>
+  </ul>
+</nav>
+
+<!-- ═══ MAIN ═══ -->
+<main>
+
+<div class="hero">
+  <div class="hbadge">DEV GUIDE v2.0</div>
+  <h1>Expert Network Search<br>Developer Reference</h1>
+  <p>Full technical documentation for the hybrid Pinecone + LangGraph Text-to-SQL backend — including architecture, component details, deployment, precision improvements, and a comprehensive future roadmap covering Neo4j, GNNs, GraphRAG, and Agentic RAG.</p>
+</div>
+
+<!-- ═══ SYSTEM OVERVIEW ═══ -->
+<section id="overview">
+<h2>System Overview</h2>
+<p>Two retrieval strategies run simultaneously on every <code>POST /chat</code> request:</p>
+<div class="tw"><table><thead><tr><th>Strategy</th><th>Component</th><th>Best for</th></tr></thead>
+<tbody>
+<tr><td><b>Vector search</b></td><td>Pinecone + OpenRouter embeddings</td><td>Semantic expert matching</td></tr>
+<tr><td><b>Structured re-ranking</b></td><td><code>pinecone_search.py</code></td><td>Signal-weighted precision (geography, seniority, experience)</td></tr>
+<tr><td><b>Text-to-SQL</b></td><td>LangGraph agent</td><td>Analytical queries, counts, distributions</td></tr>
+</tbody></table></div>
+<div class="arch">
+  <div class="arch-row">
+    <div class="ablock"><h5>Client</h5><p>curl / Swagger / API client</p></div>
+    <div class="ablock" style="border-color:rgba(79,156,249,.35)"><h5>FastAPI</h5><p>Routes · Pydantic models · CORS</p></div>
+    <div class="ablock" style="border-color:rgba(45,212,191,.35)"><h5>Session Store</h5><p>Conversation context (in-memory → Redis)</p></div>
+  </div>
+  <div class="arrow-row"><span>↓ embed query</span><span>↓ SQL if analytical</span></div>
+  <div class="arch-row">
+    <div class="ablock" style="border-color:rgba(155,140,255,.35)"><h5>Pinecone</h5><p>ANN search · metadata filters · top-3K</p></div>
+    <div class="ablock" style="border-color:rgba(251,191,36,.35)"><h5>Re-ranker</h5><p>Signal extraction · score weighting · top-N</p></div>
+    <div class="ablock" style="border-color:rgba(251,113,133,.35)"><h5>LangGraph Agent</h5><p>classify → plan → SQL → execute → repair</p></div>
+  </div>
+  <div class="arrow-row"><span>↓ vectors + metadata</span><span>↓ rows</span></div>
+  <div class="arch-row">
+    <div class="ablock"><h5>OpenRouter</h5><p>text-embedding-3-small · claude-sonnet-4.6</p></div>
+    <div class="ablock"><h5>PostgreSQL</h5><p>15 tables · 10K+ candidates</p></div>
+  </div>
+</div>
+</section>
+
+<!-- ═══ PROJECT STRUCTURE ═══ -->
+<section id="structure">
+<h2>Project Structure</h2>
+<div class="tree">
+<span class="td">expert_network/</span><br>
+├── <span class="tf">main.py</span>             <span class="tc"># FastAPI app, CORS, lifespan</span><br>
+├── <span class="tf">db.py</span>              <span class="tc"># PostgreSQLClient (psycopg2 wrapper)</span><br>
+├── <span class="tf">environment.yml</span>    <span class="tc"># Conda env (Python 3.11 + all deps)</span><br>
+├── <span class="tf">.env.example</span>       <span class="tc"># Environment variable template</span><br>
+├── <span class="td">app/</span><br>
+│   ├── <span class="tf">agent.py</span>        <span class="tc"># LangGraph Text-to-SQL (9-node graph)</span><br>
+│   ├── <span class="tf">schema.py</span>       <span class="tc"># Hard-coded DDL + descriptions for LLM</span><br>
+│   ├── <span class="tf">sql_validator.py</span><span class="tc"># SQL AST validation + DML blocking</span><br>
+│   ├── <span class="tn">models.py</span>       <span class="tc"># Pydantic request/response schemas</span><br>
+│   ├── <span class="tn">routes.py</span>       <span class="tc"># All FastAPI route handlers</span><br>
+│   ├── <span class="tn">pinecone_ingestion.py</span>  <span class="tc"># Profile builder + Pinecone upsert</span><br>
+│   ├── <span class="tn">pinecone_search.py</span>     <span class="tc"># Vector search + re-ranking engine</span><br>
+│   └── <span class="tn">session_store.py</span>      <span class="tc"># In-memory conversation sessions</span><br>
+├── <span class="td">html/</span><br>
+│   ├── <span class="tn">user_guide.html</span>    <span class="tc"># End-user documentation</span><br>
+│   └── <span class="tn">developer_guide.html</span><span class="tc"># This file</span><br>
+├── <span class="td">notebooks/</span><br>
+│   └── <span class="tn">exploration.ipynb</span>  <span class="tc"># 103-cell exploration + evaluation</span><br>
+└── <span class="td">tests/</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;└── <span class="tf">test_api.py</span>        <span class="tc"># 50+ unit tests (all mocked)</span>
+</div>
+<p style="font-size:.8rem;color:var(--dim)"><span style="color:var(--lime)">Green</span> = added in v2. Original files (agent.py, schema.py, sql_validator.py, db.py) unchanged.</p>
+</section>
+
+<!-- ═══ DATA FLOW ═══ -->
+<section id="dataflow">
+<h2>Request Data Flow</h2>
+<h3>POST /chat — full pipeline</h3>
+<div class="flow">
+  <span class="fn entry">HTTP POST</span><span class="fa">→</span>
+  <span class="fn">Session lookup</span><span class="fa">→</span>
+  <span class="fn">Context injection</span><span class="fa">→</span>
+  <span class="fn">Embed query</span><span class="fa">→</span>
+  <span class="fn">Pinecone ANN</span><span class="fa">→</span>
+  <span class="fn">Signal extract</span><span class="fa">→</span>
+  <span class="fn">Re-rank</span><span class="fa">→</span>
+  <span class="fn cond">Analytical?</span><span class="fa">→</span>
+  <span class="fn">SQL agent</span><span class="fa">→</span>
+  <span class="fn exit">JSON response</span>
+</div>
+<h3>POST /query — SQL agent</h3>
+<div class="flow">
+  <span class="fn entry">question</span><span class="fa">→</span>
+  <span class="fn">classify</span><span class="fa">→</span>
+  <span class="fn cond">sql/clarify/off_topic</span><span class="fa">→</span>
+  <span class="fn">plan_query</span><span class="fa">→</span>
+  <span class="fn">generate_sql</span><span class="fa">→</span>
+  <span class="fn">validate</span><span class="fa">→</span>
+  <span class="fn">execute</span><span class="fa">→</span>
+  <span class="fn cond">error?</span><span class="fa">→</span>
+  <span class="fn">repair ≤3×</span><span class="fa">→</span>
+  <span class="fn">format_answer</span><span class="fa">→</span>
+  <span class="fn exit">answer</span>
+</div>
+</section>
+
+<hr>
+
+<!-- ═══ INGESTION ═══ -->
+<section id="ingestion">
+<h2>Ingestion Pipeline</h2>
+<p>File: <code>app/pinecone_ingestion.py</code></p>
+<h3>Embedding strategy</h3>
+<p><b>One vector per candidate.</b> The profile text concatenates headline, skills, work experience (title + company + industry + description), education, languages, and location into a single document. The embedding model encodes all co-occurrences in one high-dimensional space.</p>
+<pre data-lang="python"><span class="dec">def</span> <span class="key">build_profile_text</span>(row: dict) -> str:
+    parts = [
+        <span class="str">f"Name: {first} {last}"</span>,
+        <span class="str">f"Professional Summary: {headline}"</span>,
+        <span class="str">f"Years of Experience: {yoe}"</span>,
+        <span class="str">f"Location: {city}, {country}"</span>,
+        <span class="str">f"Skills: {', '.join(skills)}"</span>,
+        <span class="str">f"Work Experience: {title} at {company} ({industry})"</span>,
+        <span class="str">f"Education: {degree} in {field} from {institution}"</span>,
+        <span class="str">f"Languages: {lang} ({proficiency})"</span>,
+    ]
+    <span class="kw">return</span> <span class="str">"\n"</span>.join(parts)</pre>
+<p><b>Why one vector, not per-field?</b> Expert queries are holistic. "Regulatory affairs expert with pharma experience in Saudi Arabia" needs to match against role + industry + geography simultaneously. Per-field vectors require complex fusion logic without clear precision gains at this scale.</p>
+<h3>Metadata stored per vector</h3>
+<div class="tw"><table><thead><tr><th>Field</th><th>Type</th><th>Used for</th></tr></thead>
+<tbody>
+<tr><td><code>candidate_id</code></td><td>string</td><td>Link back to PostgreSQL</td></tr>
+<tr><td><code>country_name</code></td><td>string</td><td>Geography filter + re-ranking</td></tr>
+<tr><td><code>years_of_experience</code></td><td>int</td><td>Experience threshold re-ranking</td></tr>
+<tr><td><code>current_title</code></td><td>string</td><td>Seniority detection</td></tr>
+<tr><td><code>industries</code></td><td>list[str]</td><td>Industry match re-ranking</td></tr>
+<tr><td><code>skills</code></td><td>list[str]</td><td>Returned in search results</td></tr>
+<tr><td><code>languages</code></td><td>list[str]</td><td>Language match re-ranking</td></tr>
+<tr><td><code>profile_text</code></td><td>string (1000 chars)</td><td>Debug / display</td></tr>
+</tbody></table></div>
+</section>
+
+<!-- ═══ VECTOR SEARCH ═══ -->
+<section id="vector">
+<h2>Vector Search</h2>
+<p>File: <code>app/pinecone_search.py</code> · function: <code>search_experts()</code></p>
+<p>Retrieves <code>top_k × 3</code> candidates from Pinecone (default 3× the requested count) to give the re-ranker sufficient headroom. The extra retrieval adds ~50ms but significantly improves final ranking quality.</p>
+<pre data-lang="python">results = index.query(
+    vector=query_embedding,
+    top_k=top_k,              <span class="cmt"># 3× the return count</span>
+    include_metadata=<span class="kw">True</span>,
+    filter=filters            <span class="cmt"># optional pre-filter</span>
+)</pre>
+</section>
+
+<!-- ═══ RE-RANKING ═══ -->
+<section id="reranking">
+<h2>Re-ranking Engine</h2>
+<h3>Scoring weights</h3>
+<div class="tw"><table><thead><tr><th>Signal</th><th>Condition</th><th>Δ Score</th></tr></thead>
+<tbody>
+<tr><td>Geography</td><td>Emphasised + candidate matches</td><td class="pos">+0.20</td></tr>
+<tr><td>Geography</td><td>Emphasised + candidate doesn't match</td><td class="neg">−0.10</td></tr>
+<tr><td>Experience</td><td>Threshold stated + candidate meets it</td><td class="pos">+0.10</td></tr>
+<tr><td>Experience</td><td>Threshold stated + candidate below</td><td class="neg">−0.15</td></tr>
+<tr><td>Seniority</td><td>Emphasised + senior title detected</td><td class="pos">+0.10</td></tr>
+<tr><td>Seniority</td><td>Emphasised + no senior signal</td><td class="neg">−0.05</td></tr>
+<tr><td>Industry</td><td>Emphasised + candidate has that industry</td><td class="pos">+0.12</td></tr>
+<tr><td>Industry</td><td>Emphasised + no match</td><td class="neg">−0.08</td></tr>
+<tr><td>Language</td><td>Emphasised + candidate speaks it</td><td class="pos">+0.08</td></tr>
+</tbody></table></div>
+<h3>Adding a new signal</h3>
+<pre data-lang="python"><span class="cmt"># 1. Add keyword set</span>
+EDUCATION_KEYWORDS = {<span class="str">"phd"</span>, <span class="str">"mba"</span>, <span class="str">"master"</span>, <span class="str">"doctorate"</span>}
+
+<span class="cmt"># 2. Detect in _extract_signals()</span>
+signals[<span class="str">"emphasises_education"</span>] = <span class="key">any</span>(kw <span class="kw">in</span> q <span class="kw">for</span> kw <span class="kw">in</span> EDUCATION_KEYWORDS)
+
+<span class="cmt"># 3. Score in compute_structured_score()</span>
+<span class="kw">if</span> signals.get(<span class="str">"emphasises_education"</span>):
+    <span class="kw">if</span> <span class="key">any</span>(<span class="str">"phd"</span> <span class="kw">in</span> d.lower() <span class="kw">for</span> d <span class="kw">in</span> meta.get(<span class="str">"degrees"</span>, [])):
+        score += <span class="num">0.10</span>
+        reasons.append(<span class="str">f"✓ Education: PhD detected"</span>)</pre>
+</section>
+
+<!-- ═══ SQL AGENT ═══ -->
+<section id="sql-agent">
+<h2>Text-to-SQL Agent</h2>
+<div class="tw"><table><thead><tr><th>Node</th><th>Role</th><th>Tokens</th></tr></thead>
+<tbody>
+<tr><td><code>classify</code></td><td>Routes to sql/clarify/off_topic</td><td>1024</td></tr>
+<tr><td><code>plan_query</code></td><td>Chain-of-thought: tables, JOINs needed</td><td>1024</td></tr>
+<tr><td><code>generate_sql</code></td><td>Produces SQL using DDL + examples</td><td>1024</td></tr>
+<tr><td><code>validate</code></td><td>AST parse, DML block, % escape fix</td><td>—</td></tr>
+<tr><td><code>execute</code></td><td>Run SQL against PostgreSQL (read-only)</td><td>—</td></tr>
+<tr><td><code>repair</code></td><td>Fix SQL from DB error message</td><td>4096</td></tr>
+<tr><td><code>format_answer</code></td><td>Convert rows to natural language</td><td>1024</td></tr>
+</tbody></table></div>
+<div class="box note"><div class="bi">ℹ</div><div><b>Critical JOIN pattern:</b> <code>candidates</code> has <code>city_id</code> but <b>not</b> <code>country_id</code>. Country queries must join <code>candidates → cities → countries</code>. The schema prompt includes an explicit anti-hallucination note.</div></div>
+</section>
+
+<!-- ═══ ENV ═══ -->
+<section id="env">
+<h2>Environment Variables</h2>
+<div class="tw"><table><thead><tr><th>Variable</th><th>Required</th><th>Default</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td class="ekey">DATABASE_URL</td><td>✓</td><td>—</td><td>PostgreSQL connection string</td></tr>
+<tr><td class="ekey">OPENROUTER_API_KEY</td><td>✓</td><td>—</td><td>OpenRouter key (LLM + embeddings)</td></tr>
+<tr><td class="ekey">PINECONE_API_KEY</td><td>✓</td><td>—</td><td>Pinecone API key</td></tr>
+<tr><td class="ekey">PINECONE_INDEX_NAME</td><td>—</td><td><code>expert-profiles</code></td><td>Pinecone index name</td></tr>
+<tr><td class="ekey">LLM_MODEL</td><td>—</td><td><code>anthropic/claude-sonnet-4.6</code></td><td>OpenRouter model for SQL generation</td></tr>
+<tr><td class="ekey">EMBEDDING_MODEL</td><td>—</td><td><code>openai/text-embedding-3-small</code></td><td>Embedding model (must match ingest + query)</td></tr>
+<tr><td class="ekey">EMBEDDING_BASE_URL</td><td>—</td><td><code>https://openrouter.ai/api/v1</code></td><td>OpenRouter supports embeddings natively</td></tr>
+</tbody></table></div>
+</section>
+
+<!-- ═══ LOCAL ═══ -->
+<section id="local">
+<h2>Local Development</h2>
+<pre data-lang="bash"><span class="cmt"># 1. Create conda env</span>
+conda env create -f environment.yml
+conda activate expert-network
+
+<span class="cmt"># 2. Configure</span>
+cp .env.example .env   <span class="cmt"># fill in keys</span>
+
+<span class="cmt"># 3. Start with hot-reload</span>
+uvicorn main:app --reload --port 8001
+
+<span class="cmt"># 4. Ingest candidates (one-time)</span>
+curl -X POST http://localhost:8001/ingest -d '{"batch_size":100}'
+
+<span class="cmt"># 5. Test</span>
+pytest tests/test_api.py -v</pre>
+</section>
+
+<!-- ═══ REMOTE ═══ -->
+<section id="remote">
+<h2>Remote Deployment</h2>
+<div class="tw"><table><thead><tr><th>Setting</th><th>Local</th><th>Production</th></tr></thead>
+<tbody>
+<tr><td>Host binding</td><td><code>127.0.0.1</code> (default)</td><td><code>--host 0.0.0.0</code></td></tr>
+<tr><td>Reload</td><td><code>--reload</code></td><td>Remove it</td></tr>
+<tr><td>Workers</td><td>1</td><td><code>--workers 4</code> (2×CPUs+1)</td></tr>
+<tr><td>CORS origins</td><td><code>["*"]</code></td><td>Your domain(s) only</td></tr>
+<tr><td>Session store</td><td>In-memory dict</td><td>Redis (see session_store.py)</td></tr>
+<tr><td>Reverse proxy</td><td>None</td><td>nginx + HTTPS (certbot)</td></tr>
+</tbody></table></div>
+<pre data-lang="bash"><span class="cmt"># Production start command</span>
+uvicorn main:app --host 0.0.0.0 --port 8001 --workers 4</pre>
+</section>
+
+<!-- ═══ TESTING ═══ -->
+<section id="testing">
+<h2>Running Tests</h2>
+<pre data-lang="bash">pytest tests/test_api.py -v           <span class="cmt"># all 50+ tests</span>
+pytest tests/test_api.py::TestChat -v  <span class="cmt"># one class</span>
+pytest tests/test_api.py::TestReranking::test_geography_match_boosts_score -v</pre>
+<p>All external services (Pinecone, PostgreSQL, OpenRouter) are mocked. No live credentials needed.</p>
+</section>
+
+<hr>
+
+<!-- ════════════════════════════════════════════════════════════════
+     PRECISION IMPROVEMENTS SECTION
+     ════════════════════════════════════════════════════════════════ -->
+<h2 style="font-family:var(--serif);font-size:1.8rem;color:#fff;border:none;padding:0;margin:3rem 0 .5rem;display:block">
+  Precision Improvements &amp; Future Architecture
+</h2>
+<p style="color:var(--dim);margin-bottom:2rem">Research-backed techniques that can improve the system's Precision@5 from ~0.70 to &gt;0.85+, based on the latest published benchmarks (2024–2025).</p>
+
+<!-- ═══ HYBRID SEARCH ═══ -->
+<section id="hybrid-search">
+<h2>Hybrid Search — BM25 + Dense Vectors</h2>
+<p>The current system uses <b>dense-only vector search</b>. Adding a sparse BM25 index alongside it creates a hybrid retrieval pipeline that consistently outperforms either alone.</p>
+<div class="box tip"><div class="bi">📊</div><div><b>Benchmarked improvement:</b> Hybrid search improves recall 15–30% over single methods. OpenAI + Qdrant benchmarks show recall increasing from 0.72 (BM25) → 0.91 (Hybrid) and precision from 0.68 → 0.87. Pinecone's Cascading Retrieval yields up to <b>48% better performance</b> than dense-only. <a href="https://www.pinecone.io/community/events/intro-to-cascading-retrieval/" target="_blank">Source: Pinecone Research, 2024</a></div></div>
+
+<h3>How it works</h3>
+<p>BM25 matches exact tokens (critical for names, titles like "CPO", specific keywords). Dense vectors match semantics. Reciprocal Rank Fusion (RRF) merges both ranked lists without needing to normalise their different score scales:</p>
+<pre data-lang="python"><span class="dec">def</span> <span class="key">rrf_score</span>(doc_id, bm25_rank, dense_rank, k=<span class="num">60</span>):
+    <span class="str">"""k=60 is the standard constant from research papers."""</span>
+    score = <span class="num">0</span>
+    <span class="kw">if</span> doc_id <span class="kw">in</span> bm25_results:
+        score += <span class="num">1</span> / (k + bm25_rank)
+    <span class="kw">if</span> doc_id <span class="kw">in</span> dense_results:
+        score += <span class="num">1</span> / (k + dense_rank)
+    <span class="kw">return</span> score</pre>
+
+<h3>Implementation path</h3>
+<p>Pinecone now supports sparse+dense hybrid natively. Add sparse embeddings to the index, then query both simultaneously:</p>
+<pre data-lang="python"><span class="cmt"># pip install pinecone[grpc] rank-bm25</span>
+<span class="kw">from</span> pinecone_text.sparse <span class="kw">import</span> BM25Encoder
+
+encoder = BM25Encoder().default()
+sparse_vector = encoder.encode_documents([profile_text])[<span class="num">0</span>]
+
+<span class="cmt"># Upsert with both dense and sparse vectors</span>
+index.upsert(vectors=[{
+    <span class="str">"id"</span>: candidate_id,
+    <span class="str">"values"</span>: dense_embedding,    <span class="cmt"># existing</span>
+    <span class="str">"sparse_values"</span>: sparse_vector, <span class="cmt"># NEW</span>
+    <span class="str">"metadata"</span>: meta
+}])
+
+<span class="cmt"># Query with both</span>
+results = index.query(
+    vector=query_dense,
+    sparse_vector=query_sparse,
+    alpha=<span class="num">0.5</span>,   <span class="cmt"># 0=pure sparse, 1=pure dense</span>
+    top_k=top_k,
+    include_metadata=<span class="kw">True</span>
+)</pre>
+
+<h3>When BM25 helps most for expert search</h3>
+<p>Cases where exact keyword matching is critical: queries containing exact company names ("Shell UK"), degree abbreviations ("MBA", "PhD"), specific skill names ("SPLADE", "GMP"), job title abbreviations ("CPO", "CFO"), and geographic abbreviations ("UAE", "KSA"). Dense vectors often mis-rank these because they depend on semantic overlap rather than exact match.</p>
+</section>
+
+<!-- ═══ PINECONE RERANK ═══ -->
+<section id="pinecone-rerank">
+<h2>Neural Reranking — Cross-Encoders</h2>
+<p>The current re-ranker uses hand-crafted signal weights. A cross-encoder neural reranker evaluates each (query, candidate) pair jointly — capturing far more nuanced relevance signals than cosine distance.</p>
+<div class="box tip"><div class="bi">📊</div><div><b>Pinecone reranking</b> improves precision by reprocessing the top-K results with a cross-encoder model (pinecone-rerank-v0 or Cohere Rerank 3.5) that scores query-document relevance holistically. The cross-encoder architecture processes query and document together, capturing fine-grained relevance that bi-encoders miss. <a href="https://www.pinecone.io/blog/pinecone-rerank-v0-announcement/" target="_blank">Source: Pinecone Blog, Dec 2024</a></div></div>
+<pre data-lang="python"><span class="kw">from</span> pinecone <span class="kw">import</span> Pinecone
+pc = Pinecone(api_key=os.environ[<span class="str">"PINECONE_API_KEY"</span>])
+
+<span class="cmt"># Stage 1: ANN retrieval (fast, broad)</span>
+initial_results = index.query(vector=query_vec, top_k=<span class="num">50</span>)
+documents = [m[<span class="str">"metadata"</span>][<span class="str">"profile_text"</span>] <span class="kw">for</span> m <span class="kw">in</span> initial_results[<span class="str">"matches"</span>]]
+
+<span class="cmt"># Stage 2: Neural rerank (precise, focused)</span>
+reranked = pc.inference.rerank(
+    model=<span class="str">"pinecone-rerank-v0"</span>,  <span class="cmt"># or "bge-reranker-v2-m3"</span>
+    query=query_text,
+    documents=documents,
+    top_n=<span class="num">10</span>,
+    return_documents=<span class="kw">True</span>
+)
+
+<span class="cmt"># Stage 3: Apply structured score adjustments on top</span>
+<span class="kw">for</span> item <span class="kw">in</span> reranked.data:
+    neural_score = item.score
+    adj, _ = seniority_score_adj(query, item.document[<span class="str">"metadata"</span>][<span class="str">"current_title"</span>])
+    final_score = neural_score + adj</pre>
+<p>Cascade: ANN (broad, fast) → Neural reranker (precise, slower) → Structured adjustments (interpretable). This "cascading retrieval" architecture is now Pinecone's recommended production pattern.</p>
+</section>
+
+<!-- ═══ NEO4J ═══ -->
+<section id="neo4j">
+<h2>Neo4j Graph Database</h2>
+<p>Replacing or augmenting PostgreSQL with Neo4j enables relationship-aware expert search. The candidate database has natural graph structure: candidates connect to companies, skills, industries, institutions, and locations via typed edges.</p>
+
+<div class="box note"><div class="bi">🔗</div><div>Neo4j's graph model captures multi-hop relationships that relational joins cannot express efficiently: "find candidates who worked at a company whose client was Saudi Aramco, or who was trained by someone with 20+ years in the Middle East." These 2-3 hop queries are O(1) in a graph vs O(n·m) joins.</div></div>
+
+<h3>Graph schema for expert network</h3>
+<pre data-lang="cypher"><span class="cmt">// Nodes</span>
+(:Candidate {id, name, headline, years_of_experience, country})
+(:Company   {id, name, industry})
+(:Skill     {id, name, category})
+(:Institution {id, name})
+(:Country   {id, name, code, region})
+(:Language  {id, name})
+
+<span class="cmt">// Relationships</span>
+(:Candidate)-[:WORKED_AT {title, start, end, is_current}]->(:Company)
+(:Candidate)-[:HAS_SKILL {proficiency}]->(:Skill)
+(:Candidate)-[:STUDIED_AT {degree, field, year}]->(:Institution)
+(:Candidate)-[:LOCATED_IN]->(:Country)
+(:Candidate)-[:SPEAKS {proficiency}]->(:Language)
+(:Company)-[:OPERATES_IN]->(:Country)
+(:Company)-[:IN_INDUSTRY]->(:Industry)</pre>
+
+<h3>Precision gains from graph traversal</h3>
+<pre data-lang="cypher"><span class="cmt">// Query: "Pharma regulatory experts who worked with Saudi Aramco-related companies"</span>
+MATCH (c:Candidate)-[:WORKED_AT]->(co:Company)-[:IN_INDUSTRY]->(:Industry {name:'Pharmaceutical'})
+WHERE (co)-[:OPERATED_IN]->(:Country {name:'Saudi Arabia'})
+  AND c.years_of_experience >= 10
+MATCH (c)-[:HAS_SKILL]->(s:Skill)
+WHERE s.name CONTAINS 'Regulatory'
+RETURN c, collect(s.name) AS skills
+ORDER BY c.years_of_experience DESC
+LIMIT 20</pre>
+
+<h3>Collaborative filtering via graph</h3>
+<pre data-lang="cypher"><span class="cmt">// "Experts similar to candidate X based on shared career paths"</span>
+MATCH (a:Candidate {id: $candidate_id})-[:WORKED_AT]->(co:Company)
+MATCH (b:Candidate)-[:WORKED_AT]->(co)
+WHERE a &lt;&gt; b
+WITH b, count(co) AS shared_companies
+ORDER BY shared_companies DESC
+LIMIT 10
+RETURN b.name, b.headline, shared_companies</pre>
+
+<h3>Implementation references</h3>
+<div class="ref-grid">
+<div class="rcard">
+  <div class="rt">Tutorial</div>
+  <h4>Neo4j Recommendation Engine (Hands-On)</h4>
+  <p>Official Neo4j guide: collaborative filtering, content-based filtering, graph data modelling for recommendation systems.</p>
+  <a href="https://neo4j.com/blog/developer/recommendation-engine-hands-on-1/" target="_blank">neo4j.com/blog → recommendation-engine-hands-on-1</a>
+</div>
+<div class="rcard">
+  <div class="rt">GraphAcademy</div>
+  <h4>Build a Recommendation Engine with Cypher</h4>
+  <p>Free certification course covering graph traversal patterns for recommendations. 100K+ enrolled developers.</p>
+  <a href="https://neo4j.com/docs/getting-started/appendix/tutorials/guide-build-a-recommendation-engine/" target="_blank">neo4j.com/docs → recommendation-engine</a>
+</div>
+<div class="rcard">
+  <div class="rt">YouTube</div>
+  <h4>Neo4j Graph Database for Beginners (Official)</h4>
+  <p>Complete introduction: property graphs, Cypher query language, data modelling patterns. 4-part series.</p>
+  <a href="https://www.youtube.com/@neo4j" target="_blank">youtube.com/@neo4j</a>
+</div>
+</div>
+</section>
+
+<!-- ═══ GNN ═══ -->
+<section id="gnn">
+<h2>Graph Neural Networks (GNNs)</h2>
+<p>GNNs learn richer candidate representations by propagating information across the graph. A candidate's embedding is updated iteratively by aggregating features from their neighbouring nodes (companies, skills, colleagues) — capturing latent relationships that static embeddings miss.</p>
+
+<div class="box note"><div class="bi">📊</div><div><b>Documented improvements:</b> Uber Eats achieved a 12% increase in AUC vs baseline using GNN-based recommendations. LightGCN and its variants are the de facto standard for graph-based recommendation. The key gain is capturing <em>collaborative signals</em> — candidates who have similar career trajectories cluster together in embedding space even if their profile texts differ. <a href="https://towardsdatascience.com/graph-neural-network-gnn-architectures-for-recommendation-systems-7b9dd0de0856/" target="_blank">TDS Survey, Jan 2025</a></div></div>
+
+<h3>Three GNN architectures for expert search</h3>
+<div class="tw"><table><thead><tr><th>Architecture</th><th>Graph type</th><th>Best for</th><th>Library</th></tr></thead>
+<tbody>
+<tr><td><b>Bipartite GNN</b></td><td>Candidate ↔ Skill/Company</td><td>Content-based filtering; cold-start</td><td>PyTorch Geometric</td></tr>
+<tr><td><b>Knowledge Graph GNN</b></td><td>Heterogeneous multi-edge</td><td>Multi-hop reasoning (company → industry → region)</td><td>DGL (Deep Graph Library)</td></tr>
+<tr><td><b>LightGCN</b></td><td>User-item bipartite</td><td>Collaborative filtering; scalable to 10M+ nodes</td><td>RecBole</td></tr>
+</tbody></table></div>
+
+<h3>Message passing — how GNNs update embeddings</h3>
+<pre data-lang="python"><span class="cmt"># Simplified GCN layer (PyTorch Geometric)</span>
+<span class="kw">import</span> torch
+<span class="kw">from</span> torch_geometric.nn <span class="kw">import</span> GCNConv
+
+<span class="kw">class</span> <span class="key">ExpertGNN</span>(torch.nn.Module):
+    <span class="dec">def</span> <span class="key">__init__</span>(self, in_channels, hidden, out_channels):
+        super().__init__()
+        self.conv1 = GCNConv(in_channels, hidden)
+        self.conv2 = GCNConv(hidden, out_channels)
+
+    <span class="dec">def</span> <span class="key">forward</span>(self, x, edge_index):
+        <span class="cmt"># Layer 1: aggregate from immediate neighbours (companies, skills)</span>
+        x = self.conv1(x, edge_index).relu()
+        <span class="cmt"># Layer 2: aggregate from 2-hop neighbours (colleagues, co-industries)</span>
+        x = self.conv2(x, edge_index)
+        <span class="kw">return</span> x  <span class="cmt"># enriched candidate embeddings</span>
+
+<span class="cmt"># Then use these embeddings in Pinecone instead of text-only embeddings</span></pre>
+
+<h3>Practical implementation path</h3>
+<p>1. Export candidate graph from PostgreSQL/Neo4j as edge lists. 2. Train a GNN to produce 256-dim candidate embeddings using career trajectory as supervision signal. 3. Replace text-only embeddings in Pinecone with GNN-enriched embeddings. 4. Fine-tune on historical engagement data (accepted shortlists) to align with business preferences.</p>
+
+<h3>References</h3>
+<div class="ref-grid">
+<div class="rcard">
+  <div class="rt">Medium · Decathlon Digital</div>
+  <h4>Building a Recommender System Using GNNs</h4>
+  <p>End-to-end tutorial: data prep, bipartite graph construction, message passing, hyperparameter tuning, evaluation.</p>
+  <a href="https://medium.com/decathlondigital/building-a-recommender-system-using-graph-neural-networks-2ee5fc4e706d" target="_blank">medium.com/decathlondigital → gnn-recommender</a>
+</div>
+<div class="rcard">
+  <div class="rt">TDS Survey</div>
+  <h4>GNN Architectures for Recommendation Systems</h4>
+  <p>Comprehensive review of bipartite, knowledge graph, and heterogeneous GNN models. Includes practical code examples.</p>
+  <a href="https://towardsdatascience.com/graph-neural-network-gnn-architectures-for-recommendation-systems-7b9dd0de0856/" target="_blank">towardsdatascience.com → gnn-architectures</a>
+</div>
+<div class="rcard">
+  <div class="rt">Nature Scientific Reports</div>
+  <h4>Knowledge Graph Recommendation with Multi-level Contrastive Learning</h4>
+  <p>Peer-reviewed 2024 paper: GAT + contrastive learning for KG-enhanced recommendations. Addresses data sparsity.</p>
+  <a href="https://www.nature.com/articles/s41598-024-74516-z" target="_blank">nature.com/articles/s41598-024-74516-z</a>
+</div>
+<div class="rcard">
+  <div class="rt">YouTube · Stanford CS224W</div>
+  <h4>CS224W: Machine Learning with Graphs</h4>
+  <p>Full Stanford course on GNNs. Lecture 11 covers recommender systems specifically. Free on YouTube.</p>
+  <a href="https://www.youtube.com/watch?v=JAB_plNsqkQ" target="_blank">youtube.com → CS224W Lecture 11</a>
+</div>
+</div>
+</section>
+
+<!-- ═══ GRAPHRAG ═══ -->
+<section id="graphrag">
+<h2>GraphRAG Architecture</h2>
+<p>GraphRAG (Microsoft Research, 2024) combines knowledge graphs with LLM generation. Instead of treating candidate profiles as isolated text chunks, GraphRAG extracts entities and relationships, builds a hierarchical knowledge graph, and retrieves context by traversing graph structure — enabling multi-hop reasoning that flat vector search cannot do.</p>
+
+<div class="box tip"><div class="bi">📊</div><div><b>Published results:</b> GraphRAG achieves 72–83% comprehensiveness vs traditional RAG, with 3.4× accuracy improvement in enterprise scenarios. LazyGraphRAG (2025) reduces indexing cost to 0.1% of full GraphRAG while maintaining most gains. <a href="https://www.microsoft.com/en-us/research/project/graphrag/" target="_blank">Microsoft Research, 2024–2025</a></div></div>
+
+<h3>GraphRAG for expert network search</h3>
+<div class="tw"><table><thead><tr><th>Query type</th><th>Vector RAG</th><th>GraphRAG</th></tr></thead>
+<tbody>
+<tr><td>Simple semantic match</td><td>✓ Excellent</td><td>✓ Good (but overkill)</td></tr>
+<tr><td>Multi-hop: "experts who worked for companies that supplied Saudi Aramco"</td><td>✗ Cannot traverse</td><td>✓ Graph traversal</td></tr>
+<tr><td>Community: "the pharma regulatory cluster in Riyadh"</td><td>✗ No concept of clusters</td><td>✓ Community detection</td></tr>
+<tr><td>Trajectory: "candidates who moved from big pharma to consulting"</td><td>~Partial via text</td><td>✓ Path-aware reasoning</td></tr>
+</tbody></table></div>
+
+<h3>Implementation sketch</h3>
+<pre data-lang="python"><span class="cmt"># pip install graphrag</span>
+<span class="kw">import</span> graphrag
+
+<span class="cmt"># 1. Index: extract entities + relationships from candidate profiles</span>
+<span class="cmt">#    GraphRAG uses LLM to extract: Person, Company, Skill, Location, Industry</span>
+<span class="cmt">#    and edges: worked_at, has_skill, located_in, in_industry</span>
+
+<span class="cmt"># 2. Build community summaries using Leiden algorithm</span>
+<span class="cmt">#    "The Saudi Arabian Pharmaceutical Regulatory cluster comprises..."</span>
+
+<span class="cmt"># 3. Query with graph-aware retrieval</span>
+result = graphrag.query(
+    query=<span class="str">"Find experts connected to the Saudi pharma regulatory network"</span>,
+    search_type=<span class="str">"global"</span>  <span class="cmt"># traverses entire community structure</span>
+)</pre>
+
+<h3>References</h3>
+<div class="ref-grid">
+<div class="rcard">
+  <div class="rt">Microsoft Research</div>
+  <h4>GraphRAG: From Local to Global Query-Focused Summarisation</h4>
+  <p>Original paper by Darren Edge et al. (arXiv:2404.16130). Introduces Leiden-based community detection for graph context retrieval.</p>
+  <a href="https://www.microsoft.com/en-us/research/blog/graphrag-unlocking-llm-discovery-on-narrative-private-data/" target="_blank">microsoft.com/research → graphrag</a>
+</div>
+<div class="rcard">
+  <div class="rt">GitHub</div>
+  <h4>microsoft/graphrag</h4>
+  <p>Official Python library. Includes indexing pipeline, community detection, and query engine. Active development, 20K+ stars.</p>
+  <a href="https://github.com/microsoft/graphrag" target="_blank">github.com/microsoft/graphrag</a>
+</div>
+<div class="rcard">
+  <div class="rt">Weaviate Blog</div>
+  <h4>Exploring RAG and GraphRAG: When to Use Both</h4>
+  <p>Practical comparison of retrieval strategies. Explains Microsoft's two-stage pipeline and when GraphRAG outperforms naive RAG.</p>
+  <a href="https://weaviate.io/blog/graph-rag" target="_blank">weaviate.io/blog → graph-rag</a>
+</div>
+<div class="rcard">
+  <div class="rt">YouTube · Microsoft</div>
+  <h4>GraphRAG: Knowledge Graph + LLM for Enterprise Search</h4>
+  <p>Official walkthrough of GraphRAG architecture, use cases, and benchmarks. Jonathan Larson (Microsoft Research).</p>
+  <a href="https://www.youtube.com/watch?v=r09tJfON6kE" target="_blank">youtube.com → GraphRAG walkthrough</a>
+</div>
+</div>
+</section>
+
+<!-- ═══ AGENTIC RAG ═══ -->
+<section id="agentic">
+<h2>Agentic RAG Chatbot Architecture</h2>
+<p>The current system is a <b>classic RAG pipeline</b> — one query → one retrieval → one answer. Agentic RAG transforms this into an autonomous multi-step reasoning system that can plan, retrieve from multiple sources, validate its own answers, and take follow-up actions.</p>
+
+<div class="box note"><div class="bi">💡</div><div><b>Agentic RAG vs Classic RAG:</b> Classic RAG is a passive tool that responds to queries. Agentic RAG is a proactive system that decomposes complex queries into sub-queries, selects the best retrieval strategy per sub-query, executes them in parallel, validates the combined result, and iterates if confidence is low. Error rates drop by up to 78% in production agentic RAG systems (Cyfuture, 2025).</div></div>
+
+<h3>Proposed agentic architecture for expert network</h3>
+<div class="arch">
+  <div class="arch-row">
+    <div class="ablock" style="border-color:rgba(251,113,133,.35)"><h5>Router Agent</h5><p>Classifies query: semantic search / analytical / multi-hop / hybrid</p></div>
+    <div class="ablock" style="border-color:rgba(155,140,255,.35)"><h5>Query Planner</h5><p>Decomposes complex query into focused sub-queries</p></div>
+  </div>
+  <div class="arrow-row"><span>↓ parallel dispatch</span></div>
+  <div class="arch-row">
+    <div class="ablock" style="border-color:rgba(45,212,191,.35)"><h5>Vector Tool</h5><p>Pinecone hybrid search + neural rerank</p></div>
+    <div class="ablock" style="border-color:rgba(251,191,36,.35)"><h5>SQL Tool</h5><p>LangGraph Text-to-SQL for exact counts</p></div>
+    <div class="ablock" style="border-color:rgba(79,156,249,.35)"><h5>Graph Tool</h5><p>Neo4j Cypher for multi-hop traversal</p></div>
+  </div>
+  <div class="arrow-row"><span>↓ merge + rank</span></div>
+  <div class="arch-row">
+    <div class="ablock" style="border-color:rgba(134,239,172,.35)"><h5>Validator Agent</h5><p>Checks result quality, triggers re-query if confidence low</p></div>
+    <div class="ablock"><h5>Response Composer</h5><p>LLM generates structured answer with citations</p></div>
+  </div>
+</div>
+
+<h3>Conversational memory upgrade</h3>
+<p>The current <code>session_store.py</code> keeps the last N turns in memory. A production agentic chatbot needs:</p>
+<div class="tw"><table><thead><tr><th>Memory type</th><th>Current</th><th>Target</th><th>Library</th></tr></thead>
+<tbody>
+<tr><td>Short-term</td><td>In-memory list (session)</td><td>Redis with TTL + LLM context compression</td><td>LangChain Memory</td></tr>
+<tr><td>Long-term</td><td>None</td><td>Persist user preferences, past searches, accepted candidates</td><td>Zep / Mem0</td></tr>
+<tr><td>Semantic cache</td><td>None</td><td>Cache frequent queries to avoid re-embedding</td><td>Redis + vector similarity</td></tr>
+</tbody></table></div>
+
+<h3>References</h3>
+<div class="ref-grid">
+<div class="rcard">
+  <div class="rt">IBM Think</div>
+  <h4>What is Agentic RAG?</h4>
+  <p>Comprehensive explanation of agentic RAG architecture: multi-source retrieval, tool use, validation loops, memory systems.</p>
+  <a href="https://www.ibm.com/think/topics/agentic-rag" target="_blank">ibm.com/think → agentic-rag</a>
+</div>
+<div class="rcard">
+  <div class="rt">NVIDIA Developer Blog</div>
+  <h4>Traditional RAG vs Agentic RAG</h4>
+  <p>Clear comparison with architecture diagrams. Covers dynamic knowledge, tool selection, and iterative self-correction.</p>
+  <a href="https://developer.nvidia.com/blog/traditional-rag-vs-agentic-rag-why-ai-agents-need-dynamic-knowledge-to-get-smarter/" target="_blank">developer.nvidia.com → agentic-rag</a>
+</div>
+<div class="rcard">
+  <div class="rt">LangChain Docs</div>
+  <h4>Build a RAG Agent with LangChain</h4>
+  <p>Official tutorial for building conversational RAG agents with tool use, memory, and streaming. Regularly updated.</p>
+  <a href="https://docs.langchain.com/oss/python/langchain/rag" target="_blank">docs.langchain.com → rag-agent</a>
+</div>
+<div class="rcard">
+  <div class="rt">Medium · Customertimes</div>
+  <h4>2025 Trends: Agentic RAG and SLMs</h4>
+  <p>Industry analysis of 2025 agentic AI trends: memory systems, specialised models, cost-optimised architectures.</p>
+  <a href="https://medium.com/customertimes/2025-trands-agentic-rag-slm-1a3393e0c3c9" target="_blank">medium.com/customertimes → agentic-rag-2025</a>
+</div>
+</div>
+</section>
+
+<!-- ═══ FUTURE IMPROVEMENTS SUMMARY ═══ -->
+<section id="future">
+<h2>Future Roadmap — Prioritised by Impact</h2>
+<div class="future-grid">
+
+<div class="fcard hybrid">
+  <h4>🔀 Hybrid BM25+Dense Search <span class="impact high">HIGH</span></h4>
+  <p>Add sparse Pinecone index alongside existing dense. Use RRF fusion. Most immediate precision gain.</p>
+  <ul>
+    <li>+15–30% recall improvement (benchmarked)</li>
+    <li>Critical for exact term queries (CPO, GMP, company names)</li>
+    <li>Pinecone native support — minimal code change</li>
+  </ul>
+  <a href="https://www.pinecone.io/learn/series/rag/rerankers/" target="_blank">→ Pinecone hybrid search guide</a>
+</div>
+
+<div class="fcard" style="background:linear-gradient(135deg,var(--s1),rgba(155,140,255,.05))">
+  <h4>🎯 Neural Reranker (Cross-Encoder) <span class="impact high">HIGH</span></h4>
+  <p>Replace rule-based scoring with Pinecone rerank-v0 or Cohere Rerank 3.5. Captures holistic relevance.</p>
+  <ul>
+    <li>Cross-encoder processes query+doc jointly</li>
+    <li>Works on top of any first-stage retrieval</li>
+    <li>Pinecone Inference API — no infrastructure</li>
+  </ul>
+  <a href="https://www.pinecone.io/blog/pinecone-rerank-v0-announcement/" target="_blank">→ Pinecone reranking guide</a>
+</div>
+
+<div class="fcard neo4j">
+  <h4>🔗 Neo4j Graph Database <span class="impact medium">MEDIUM</span></h4>
+  <p>Add graph layer for relationship-aware queries. Multi-hop reasoning, collaborative filtering.</p>
+  <ul>
+    <li>Career path similarity ("worked at similar companies")</li>
+    <li>Network effects ("colleagues of shortlisted experts")</li>
+    <li>Complex Cypher queries replace multi-JOIN SQL</li>
+  </ul>
+  <a href="https://neo4j.com/blog/developer/recommendation-engine-hands-on-1/" target="_blank">→ Neo4j recommendation tutorial</a>
+</div>
+
+<div class="fcard gnn">
+  <h4>🧠 Graph Neural Networks <span class="impact medium">MEDIUM</span></h4>
+  <p>Train GNN on career trajectory graph to produce richer candidate embeddings than text-only.</p>
+  <ul>
+    <li>Captures latent collaborative signals</li>
+    <li>LightGCN proven for large-scale recommendation</li>
+    <li>Requires labelled engagement data for fine-tuning</li>
+  </ul>
+  <a href="https://medium.com/decathlondigital/building-a-recommender-system-using-graph-neural-networks-2ee5fc4e706d" target="_blank">→ GNN recommender tutorial (Decathlon)</a>
+</div>
+
+<div class="fcard rag">
+  <h4>🕸️ GraphRAG <span class="impact medium">MEDIUM</span></h4>
+  <p>Microsoft GraphRAG for multi-hop queries and community-level retrieval. Best for "find the Saudi pharma regulatory cluster".</p>
+  <ul>
+    <li>72–83% comprehensiveness vs flat RAG</li>
+    <li>3.4× accuracy on enterprise scenarios</li>
+    <li>High indexing cost; use LazyGraphRAG variant</li>
+  </ul>
+  <a href="https://github.com/microsoft/graphrag" target="_blank">→ github.com/microsoft/graphrag</a>
+</div>
+
+<div class="fcard agent">
+  <h4>🤖 Agentic RAG Chatbot <span class="impact medium">MEDIUM</span></h4>
+  <p>Multi-tool agent: Router → Vector tool + SQL tool + Graph tool → Validator → Composer.</p>
+  <ul>
+    <li>Decomposes complex queries automatically</li>
+    <li>Self-validates and iterates on low-confidence results</li>
+    <li>Long-term user preference memory via Zep/Mem0</li>
+  </ul>
+  <a href="https://www.ibm.com/think/topics/agentic-rag" target="_blank">→ IBM Agentic RAG guide</a>
+</div>
+
+</div>
+</section>
+
+<hr>
+
+<!-- ═══ API REFERENCE ═══ -->
+<section id="api-ref">
+<h2>API Reference</h2>
+<div class="tw"><table><thead><tr><th>Method</th><th>Path</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><span class="badge post">POST</span></td><td><code>/ingest</code></td><td>Run Pinecone ingestion pipeline</td></tr>
+<tr><td><span class="badge post">POST</span></td><td><code>/chat</code></td><td>Natural-language expert search + re-ranking</td></tr>
+<tr><td><span class="badge post">POST</span></td><td><code>/query</code></td><td>Text-to-SQL analytics agent</td></tr>
+<tr><td><span class="badge get">GET</span></td><td><code>/expert/{id}</code></td><td>Full candidate profile from PostgreSQL</td></tr>
+<tr><td><span class="badge get">GET</span></td><td><code>/conversations</code></td><td>List active conversation sessions</td></tr>
+<tr><td><span class="badge get">GET</span></td><td><code>/health</code></td><td>Health check</td></tr>
+<tr><td><span class="badge get">GET</span></td><td><code>/schema</code></td><td>DB schema, row counts, FK relationships</td></tr>
+</tbody></table></div>
+</section>
+
+<!-- ═══ MODELS ═══ -->
+<section id="models">
+<h2>Pydantic Models</h2>
+<div class="tw"><table><thead><tr><th>Model</th><th>Used by</th></tr></thead>
+<tbody>
+<tr><td><code>ChatRequest</code></td><td>POST /chat input</td></tr>
+<tr><td><code>ChatResponse</code></td><td>POST /chat output</td></tr>
+<tr><td><code>ExpertResult</code></td><td>Item in ChatResponse.results</td></tr>
+<tr><td><code>MatchExplanation</code></td><td>Nested in ExpertResult</td></tr>
+<tr><td><code>IngestRequest / Response</code></td><td>POST /ingest</td></tr>
+<tr><td><code>ExpertProfileResponse</code></td><td>GET /expert/{id}</td></tr>
+<tr><td><code>ConversationsResponse</code></td><td>GET /conversations</td></tr>
+</tbody></table></div>
+</section>
+
+<!-- ═══ RESOURCES ═══ -->
+<section id="resources">
+<h2>Resources, Papers &amp; References</h2>
+
+<h3>Retrieval &amp; Re-ranking</h3>
+<div class="ref-grid">
+<div class="rcard"><div class="rt">Pinecone Blog, Aug 2024</div><h4>Introducing Reranking to Pinecone Inference</h4><p>Launch post for pinecone-rerank-v0 + bge-reranker-v2-m3. Architecture, benchmarks, API usage.</p><a href="https://www.pinecone.io/blog/introducing-reranking-to-pinecone-inference/" target="_blank">pinecone.io/blog → reranking</a></div>
+<div class="rcard"><div class="rt">Pinecone Blog, Dec 2024</div><h4>Cascading Retrieval: 48% Better than Dense-Only</h4><p>Dense + sparse + reranking unified pipeline. Benchmark methodology and results.</p><a href="https://www.pinecone.io/community/events/intro-to-cascading-retrieval/" target="_blank">pinecone.io → cascading-retrieval</a></div>
+<div class="rcard"><div class="rt">Dev.to, Dec 2025</div><h4>Dense vs Sparse Retrieval: Mastering FAISS, BM25, Hybrid Search</h4><p>Practical comparison with code. HNSW, IVF-PQ, RRF fusion implementation patterns.</p><a href="https://dev.to/qvfagundes/dense-vs-sparse-retrieval-mastering-faiss-bm25-and-hybrid-search-4kb1" target="_blank">dev.to → hybrid-search</a></div>
+<div class="rcard"><div class="rt">Paper, arXiv 2024</div><h4>Lost in the Middle: How LLMs Use Long Contexts</h4><p>Liu et al. Shows why reranking (not just retrieval) is critical — LLMs underperform when relevant docs are in the middle of context.</p><a href="https://arxiv.org/abs/2307.03172" target="_blank">arxiv.org/abs/2307.03172</a></div>
+</div>
+
+<h3>Graph Databases &amp; GNNs</h3>
+<div class="ref-grid">
+<div class="rcard"><div class="rt">TDS, Jan 2025</div><h4>Graph Neural Network Architectures for Recommendation Systems</h4><p>Comprehensive review of bipartite GNNs, knowledge graph GNNs, sequential models. Code examples using PyTorch Geometric.</p><a href="https://towardsdatascience.com/graph-neural-network-gnn-architectures-for-recommendation-systems-7b9dd0de0856/" target="_blank">towardsdatascience.com → gnn-architectures</a></div>
+<div class="rcard"><div class="rt">Scientific Reports, Oct 2024</div><h4>Knowledge Graph Recommendation with Multi-level Contrastive Learning</h4><p>Rong, Yuan &amp; Yang. GAT + Momentum Contrast (MoCo) for KG recommendation. Nature open access.</p><a href="https://www.nature.com/articles/s41598-024-74516-z" target="_blank">nature.com → s41598-024-74516-z</a></div>
+<div class="rcard"><div class="rt">ScienceDirect, Jan 2025</div><h4>Homogeneous vs Heterogeneous GNNs in Recommender Systems</h4><p>Comparative analysis of GCN architectures on Amazon 2023 dataset. RMSE and MAE benchmarks across Fashion, Beauty, Music.</p><a href="https://www.sciencedirect.com/science/article/pii/S0925231225001183" target="_blank">sciencedirect.com → pii/S0925231225001183</a></div>
+<div class="rcard"><div class="rt">TDS, Nov 2025</div><h4>Build a Recommendation Engine Using EDG and Neo4j</h4><p>Taxonomy-driven graph recommendation. Separating ontology (EDG) from instance data (Neo4j) for modular, evolvable systems.</p><a href="https://towardsdatascience.com/how-to-build-a-recommendation-engine-using-edg-and-neo4j/" target="_blank">towardsdatascience.com → neo4j-recommendation</a></div>
+</div>
+
+<h3>GraphRAG &amp; Agentic Systems</h3>
+<div class="ref-grid">
+<div class="rcard"><div class="rt">Microsoft Research, 2024</div><h4>From Local to Global: A Graph RAG Approach to Query-Focused Summarisation</h4><p>Original GraphRAG paper. Edge et al. arXiv:2404.16130. Leiden algorithm for community detection, hierarchical context retrieval.</p><a href="https://arxiv.org/abs/2404.16130" target="_blank">arxiv.org/abs/2404.16130</a></div>
+<div class="rcard"><div class="rt">arXiv, Feb 2026</div><h4>When to Use Graphs in RAG: GraphRAG-Bench Analysis</h4><p>Systematic evaluation of when GraphRAG beats vanilla RAG. Fact retrieval, complex reasoning, contextual summarisation benchmarks.</p><a href="https://arxiv.org/html/2506.05690v3" target="_blank">arxiv.org/html/2506.05690v3</a></div>
+<div class="rcard"><div class="rt">NVIDIA Developer, Dec 2025</div><h4>Traditional RAG vs. Agentic RAG</h4><p>Architecture comparison, use cases, dynamic knowledge integration. NVIDIA AI stack perspective.</p><a href="https://developer.nvidia.com/blog/traditional-rag-vs-agentic-rag-why-ai-agents-need-dynamic-knowledge-to-get-smarter/" target="_blank">developer.nvidia.com → agentic-rag</a></div>
+<div class="rcard"><div class="rt">IBM Think, Nov 2025</div><h4>What is Agentic RAG?</h4><p>Comprehensive explainer: multi-source retrieval, tool use, validation loops, semantic caching, long-term memory architectures.</p><a href="https://www.ibm.com/think/topics/agentic-rag" target="_blank">ibm.com/think → agentic-rag</a></div>
+</div>
+
+<h3>Evaluation &amp; Precision</h3>
+<div class="ref-grid">
+<div class="rcard"><div class="rt">Paper</div><h4>RAGAS: Automated Evaluation of Retrieval Augmented Generation</h4><p>Es et al. (arXiv:2309.15217). Framework for measuring RAG system quality: faithfulness, context relevancy, answer relevancy.</p><a href="https://arxiv.org/abs/2309.15217" target="_blank">arxiv.org/abs/2309.15217</a></div>
+<div class="rcard"><div class="rt">GitHub · Microsoft</div><h4>BenchmarkQED: Tools for Evaluating RAG Systems</h4><p>Open-source evaluation toolkit from Microsoft GraphRAG team. Claimify and Veritrail tools for factual consistency checking.</p><a href="https://github.com/microsoft/graphrag" target="_blank">github.com/microsoft/graphrag → benchmarkqed</a></div>
+</div>
+</section>
+
+<!-- ═══ RAG-ANYTHING ═══ -->
+<section id="rag-anything">
+<h2>RAG-Anything — All-in-One Multimodal RAG</h2>
+<p>
+  <b>RAG-Anything</b> (HKUDS / University of Hong Kong, 2025) extends traditional text-only RAG
+  into a unified multimodal pipeline. Built on top of LightRAG, it processes PDFs, Office documents,
+  images, tables, mathematical equations, and code — all through a single cohesive API.
+  The repo has 15K+ GitHub stars and is actively maintained as of 2026.
+</p>
+
+<div class="box tip"><div class="bi">🌟</div><div>
+  <b>Why it matters for expert search:</b> Candidate profiles in the real world come as PDFs, CVs
+  with embedded charts, LinkedIn exports, scanned documents, and research publications with equations.
+  RAG-Anything can process all of these and build a unified multimodal knowledge graph — so a query like
+  "Find candidates who published work on GNN-based recommendation systems" can retrieve evidence
+  from both the text <em>and</em> the figures in those papers.
+</div></div>
+
+<h3>Core architecture — 5-stage pipeline</h3>
+<div class="tw"><table><thead><tr><th>Stage</th><th>What happens</th><th>Key component</th></tr></thead>
+<tbody>
+<tr><td>1. Document Parsing</td><td>MinerU / Docling / PaddleOCR extracts text blocks, images, tables, equations with layout preservation</td><td>MinerU integration</td></tr>
+<tr><td>2. Content Routing</td><td>Autonomous categorisation routes each element to its specialised processor concurrently</td><td>Concurrent multi-pipeline</td></tr>
+<tr><td>3. Multimodal Analysis</td><td>Vision LLM captions images; table interpreter extracts trends; LaTeX parser handles equations</td><td>ImageModalProcessor, TableModalProcessor, EquationProcessor</td></tr>
+<tr><td>4. Knowledge Graph Index</td><td>Entities + cross-modal relationships extracted and scored; hierarchical "belongs_to" chains preserved</td><td>LightRAG KG layer</td></tr>
+<tr><td>5. Modality-Aware Retrieval</td><td>Vector-Graph fusion with modality-aware ranking and relational coherence maintenance</td><td>Hybrid retrieval engine</td></tr>
+</tbody></table></div>
+
+<h3>Supported content types</h3>
+<p>
+  <b>Documents:</b> PDF, DOC/DOCX, PPT/PPTX, XLS/XLSX, TXT, MD
+  &nbsp;·&nbsp;
+  <b>Images:</b> JPG, PNG, BMP, TIFF, GIF, WebP
+  &nbsp;·&nbsp;
+  <b>Modalities:</b> text, images, tables, equations (LaTeX), custom types via plugin API
+</p>
+
+<h3>Three query modes</h3>
+<pre data-lang="python"><span class="kw">import</span> asyncio
+<span class="kw">from</span> raganything <span class="kw">import</span> RAGAnything, RAGAnythingConfig
+
+<span class="cmt"># Mode 1: Pure text — standard knowledge base search</span>
+text_result = <span class="kw">await</span> rag.aquery(
+    <span class="str">"What are the key findings in the regulatory affairs section?"</span>,
+    mode=<span class="str">"hybrid"</span>
+)
+
+<span class="cmt"># Mode 2: VLM-enhanced — LLM automatically analyses retrieved images</span>
+vlm_result = <span class="kw">await</span> rag.aquery(
+    <span class="str">"Analyse the charts showing pharma market share by region"</span>,
+    mode=<span class="str">"hybrid"</span>,
+    vlm_enhanced=<span class="kw">True</span>   <span class="cmt"># images sent to vision LLM automatically</span>
+)
+
+<span class="cmt"># Mode 3: Multimodal query — include new modal content in the query itself</span>
+mm_result = <span class="kw">await</span> rag.aquery_with_multimodal(
+    <span class="str">"Compare this formula with the document content"</span>,
+    multimodal_content=[{
+        <span class="str">"type"</span>: <span class="str">"equation"</span>,
+        <span class="str">"latex"</span>: <span class="str">r"P(d|q) = rac{P(q|d) \cdot P(d)}{P(q)}"</span>,
+        <span class="str">"equation_caption"</span>: <span class="str">"Relevance probability"</span>
+    }],
+    mode=<span class="str">"hybrid"</span>
+)</pre>
+
+<h3>Applying RAG-Anything to expert profiles</h3>
+<p>
+  Instead of embedding candidate profiles as plain text, RAG-Anything can process the
+  original CV PDFs or LinkedIn exports — preserving tables (work history), charts
+  (skills radar), and embedded images (certifications). The result is a richer knowledge
+  graph where entities like "Pharmaceutical Regulatory Affairs" are linked to both
+  textual mentions <em>and</em> visual evidence (certificate scans, org charts).
+</p>
+<pre data-lang="python"><span class="cmt"># Process a folder of candidate CVs</span>
+<span class="kw">await</span> rag.process_folder_complete(
+    folder_path=<span class="str">"./candidate_cvs/"</span>,
+    output_dir=<span class="str">"./output/"</span>,
+    file_extensions=[<span class="str">".pdf"</span>, <span class="str">".docx"</span>, <span class="str">".pptx"</span>],
+    recursive=<span class="kw">True</span>,
+    max_workers=<span class="num">4</span>
+)
+
+<span class="cmt"># Then query across all modalities simultaneously</span>
+result = <span class="kw">await</span> rag.aquery(
+    <span class="str">"Find regulatory affairs experts whose CVs show pharma certifications"</span>,
+    mode=<span class="str">"hybrid"</span>,
+    vlm_enhanced=<span class="kw">True</span>
+)</pre>
+
+<h3>Integration with the current system</h3>
+<div class="tw"><table><thead><tr><th>Current approach</th><th>RAG-Anything upgrade</th><th>Precision gain</th></tr></thead>
+<tbody>
+<tr><td>Text-only profile embedding via <code>build_profile_text()</code></td><td>Full CV PDF processing with image + table + equation parsing</td><td>Captures visual credentials, certification images, org charts</td></tr>
+<tr><td>Static Pinecone metadata</td><td>Dynamic multimodal knowledge graph (LightRAG backend)</td><td>Cross-modal relationship queries ("experts whose publications include pharma KPIs")</td></tr>
+<tr><td>One embedding per candidate</td><td>Multiple entity nodes per candidate (person + publications + certifications)</td><td>Finer-grained retrieval; separate scoring per evidence type</td></tr>
+</tbody></table></div>
+
+<div class="ref-grid">
+<div class="rcard">
+  <div class="rt">GitHub · HKUDS · 15K★</div>
+  <h4>RAG-Anything: All-in-One RAG Framework</h4>
+  <p>Official repo. Full source code, examples, MinerU/Docling/PaddleOCR parsers, 17 releases. Active as of March 2026.</p>
+  <a href="https://github.com/HKUDS/RAG-Anything" target="_blank">github.com/HKUDS/RAG-Anything</a>
+</div>
+<div class="rcard">
+  <div class="rt">arXiv · 2510.12323</div>
+  <h4>RAG-Anything: All-in-One RAG Framework (Technical Report)</h4>
+  <p>Guo, Ren, Xu, Zhang &amp; Huang. HKUDS 2025. Architecture, multimodal pipeline design, evaluation benchmarks.</p>
+  <a href="https://arxiv.org/abs/2510.12323" target="_blank">arxiv.org/abs/2510.12323</a>
+</div>
+<div class="rcard">
+  <div class="rt">Medium · Mayurkumar Surani</div>
+  <h4>RAG-Anything: The Complete Guide to Building Multimodal AI Systems</h4>
+  <p>Comprehensive practitioner guide: architecture walkthrough, code examples, real-world use cases, comparison with traditional RAG.</p>
+  <a href="https://mayursurani.medium.com/rag-anything-the-complete-guide-to-building-multimodal-ai-systems-with-all-in-one-6b88137fba4e" target="_blank">medium.com → rag-anything-complete-guide</a>
+</div>
+<div class="rcard">
+  <div class="rt">PyPI</div>
+  <h4>raganything Python package</h4>
+  <p>Install with <code>pip install raganything</code> or <code>pip install raganything[all]</code>. Supports Python 3.10+.</p>
+  <a href="https://pypi.org/project/raganything/" target="_blank">pypi.org/project/raganything</a>
+</div>
+</div>
+</section>
+
+<!-- ═══ MMGRAPHRAG ═══ -->
+<section id="mmgraphrag">
+<h2>MMGraphRAG — Multimodal Knowledge Graphs with Vision + Language</h2>
+<p>
+  <b>MMGraphRAG</b> (Wan &amp; Yu, arXiv:2507.20804, 2026 — Harbin Institute of Technology / NTU Singapore)
+  extends GraphRAG into the multimodal domain. Where classic GraphRAG builds a knowledge graph
+  from text alone, MMGraphRAG constructs an <em>interpretable multimodal knowledge graph</em> that
+  fuses visual entities (extracted from images via a dedicated Image2Graph module) with textual
+  entities through a cross-modal fusion module.
+</p>
+
+<div class="box note"><div class="bi">📄</div><div>
+  <b>Key innovation:</b> MMGraphRAG introduces two novel components — <b>Image2Graph</b> (converts
+  image content into structured graph entities and relationships) and <b>SpecLink</b> (a spectral
+  clustering-based entity alignment method that matches visual entities to their textual counterparts
+  with fine-grained precision). Together they enable true cross-modal reasoning: a query about a
+  "pharmaceutical manufacturing process" can retrieve both textual descriptions <em>and</em>
+  visual flowcharts that depict it.
+</div></div>
+
+<h3>Architecture — three-module pipeline</h3>
+<div class="tw"><table><thead><tr><th>Module</th><th>Role</th><th>Technical detail</th></tr></thead>
+<tbody>
+<tr><td><b>Image2Graph</b></td><td>Converts image content into structured KG entities and typed edges</td><td>VLM extracts visual entities; spatial relationships mapped to graph edges; entity metadata preserved</td></tr>
+<tr><td><b>SpecLink</b></td><td>Aligns visual entities to textual entities in the existing KG</td><td>Spectral clustering generates candidate matches; CMEL (Cross-Modal Entity Linking) task for fine-grained alignment; iterative graph construction</td></tr>
+<tr><td><b>Cross-Modal Fusion</b></td><td>Merges aligned entity pairs into unified representations for retrieval</td><td>Entity fusion for unified representation; weighted relevance scoring; relational coherence across modalities</td></tr>
+</tbody></table></div>
+
+<h3>How it differs from RAG-Anything</h3>
+<div class="tw"><table><thead><tr><th>Dimension</th><th>RAG-Anything</th><th>MMGraphRAG</th></tr></thead>
+<tbody>
+<tr><td>Primary goal</td><td>Universal document processing — handle any modality</td><td>Interpretable multimodal KG — explain cross-modal reasoning</td></tr>
+<tr><td>Graph construction</td><td>LightRAG-based KG with multimodal entity nodes</td><td>Separate visual KG + textual KG → fused via SpecLink alignment</td></tr>
+<tr><td>Entity alignment</td><td>Implicit (VLM captions bridge modalities)</td><td>Explicit spectral clustering-based CMEL task</td></tr>
+<tr><td>Interpretability</td><td>Good (entity extraction visible)</td><td>High (alignment scores + spectral evidence for every cross-modal link)</td></tr>
+<tr><td>Best for</td><td>Diverse document corpora, operational pipelines</td><td>Research requiring explainable cross-modal reasoning</td></tr>
+</tbody></table></div>
+
+<h3>Relevance to expert network search</h3>
+<p>
+  For expert search, MMGraphRAG's cross-modal fusion approach means that:
+</p>
+<ul style="margin:.5rem 0 1rem 1.4rem;color:#b8c4d8;font-size:.88rem">
+  <li style="margin-bottom:.4rem">A candidate's <em>textual</em> claim ("expertise in GMP pharmaceutical manufacturing") can be <b>aligned to visual evidence</b> — certification images, org chart positions, publication figures — increasing retrieval confidence</li>
+  <li style="margin-bottom:.4rem">The SpecLink alignment produces <b>interpretable confidence scores</b> for each text-image link, enabling explainability ("this candidate ranked highly because their textual bio aligns with their certification image with confidence 0.91")</li>
+  <li style="margin-bottom:.4rem">Queries involving both text and image intent ("find candidates who appear in pharma plant photographs AND have regulatory experience") become tractable via unified KG traversal</li>
+</ul>
+
+<h3>MMGraphRAG vs current system — upgrade path</h3>
+<pre data-lang="python"><span class="cmt"># Current system: text-only profile → one dense vector → Pinecone ANN</span>
+profile_text = build_profile_text(candidate)
+embedding    = embed(profile_text)
+index.upsert(id=candidate_id, values=embedding, metadata=meta)
+
+<span class="cmt"># MMGraphRAG upgrade path (conceptual):</span>
+<span class="cmt"># 1. Extract visual entities from CV images (Image2Graph)</span>
+visual_kg  = image2graph(candidate_cv_image, vlm=vision_llm)
+
+<span class="cmt"># 2. Build textual KG from profile text (existing LightRAG approach)</span>
+text_kg    = lightrag.build_kg(profile_text)
+
+<span class="cmt"># 3. Align visual ↔ textual entities (SpecLink)</span>
+fused_kg   = speclink.align(visual_kg, text_kg, method=<span class="str">"spectral_clustering"</span>)
+
+<span class="cmt"># 4. Unified KG retrieval with cross-modal evidence scoring</span>
+results    = mmgraphrag.query(
+    query=<span class="str">"Regulatory expert with pharma certifications Saudi Arabia"</span>,
+    kg=fused_kg
+)
+<span class="cmt"># Each result includes: relevance_score + modal_evidence + alignment_confidence</span></pre>
+
+<h3>Combined multimodal future architecture</h3>
+<p>Combining RAG-Anything (operational processing) with MMGraphRAG (cross-modal reasoning) and Neo4j (relational graph) produces the most complete expert search system:</p>
+
+<div style="background:var(--s2);border:1px solid var(--bdr);border-radius:9px;padding:1.6rem;margin:1rem 0">
+  <div style="font-family:var(--mono);font-size:.76rem;line-height:2.1;color:#b8c4d8">
+    <span style="color:var(--teal)">Layer 1 — Ingestion:</span> RAG-Anything parses all CV formats → text + images + tables + equations<br>
+    <span style="color:var(--purple)">Layer 2 — Representation:</span> MMGraphRAG Image2Graph + SpecLink → fused multimodal KG per candidate<br>
+    <span style="color:var(--blue)">Layer 3 — Storage:</span> Neo4j stores relational graph · Pinecone stores dense embeddings · BM25 stores sparse index<br>
+    <span style="color:var(--amber)">Layer 4 — Retrieval:</span> Hybrid BM25+Dense → Neural reranker → Graph traversal → Cross-modal fusion score<br>
+    <span style="color:var(--lime)">Layer 5 — Generation:</span> Agentic RAG composes answer with textual + visual + relational evidence
+  </div>
+</div>
+
+<div class="ref-grid">
+<div class="rcard">
+  <div class="rt">arXiv:2507.20804v2 · 2026</div>
+  <h4>MMGraphRAG: Bridging Vision and Language with Interpretable Multimodal Knowledge Graphs</h4>
+  <p>Wan &amp; Yu (Harbin Institute of Technology / NTU Singapore). Image2Graph, SpecLink CMEL task, cross-modal fusion. Published March 2026.</p>
+  <a href="https://arxiv.org/html/2507.20804v2" target="_blank">arxiv.org/html/2507.20804v2</a>
+</div>
+<div class="rcard">
+  <div class="rt">Microsoft Research · 2024</div>
+  <h4>GraphRAG: From Local to Global (Foundation paper)</h4>
+  <p>Edge et al. The original GraphRAG paper that both RAG-Anything and MMGraphRAG build upon. Leiden algorithm, community summaries.</p>
+  <a href="https://arxiv.org/abs/2404.16130" target="_blank">arxiv.org/abs/2404.16130</a>
+</div>
+<div class="rcard">
+  <div class="rt">GitHub · HKUDS</div>
+  <h4>LightRAG — the underlying KG engine</h4>
+  <p>Both RAG-Anything and the MMGraphRAG approach build on LightRAG's graph storage and retrieval. Understanding LightRAG is essential context.</p>
+  <a href="https://github.com/HKUDS/LightRAG" target="_blank">github.com/HKUDS/LightRAG</a>
+</div>
+</div>
+</section>
+
+
+<footer>// expert-network · developer-guide · v2.0 · FastAPI + Pinecone + LangGraph + RAG-Anything + MMGraphRAG</footer>
+</main>
+</div>
+
+<script>
+const ss=document.querySelectorAll('section[id]');
+const ls=document.querySelectorAll('nav a[href^="#"]');
+ss.forEach(s=>{
+  new IntersectionObserver(es=>{
+    es.forEach(e=>{
+      if(e.isIntersecting){
+        ls.forEach(l=>l.classList.remove('on'));
+        const a=document.querySelector(`nav a[href="#${e.target.id}"]`);
+        if(a)a.classList.add('on');
+      }
+    });
+  },{rootMargin:'-10% 0px -75% 0px'}).observe(s);
+});
+</script>
+</body>
+</html>
